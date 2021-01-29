@@ -3,7 +3,6 @@
 import numpy as np
 from scipy.spatial.distance import euclidean
 from heapq import heapify, heappush
-import tau
 
 class Queue():
 
@@ -22,7 +21,7 @@ class Queue():
     for i, item in enumerate(self.pq):
       if item[1] == b:
         elem = self.pq.pop(i)
-
+        
   def refresh(self):
     heapify(self.pq)
 
@@ -178,12 +177,4 @@ def cluster(data):
     labels[b] = labels[N]
     labels[N] = -1
 
-
-
   return linkage
-
-def OurMain():
-  x = np.random.rand(100, 5)
-  l1 = generic_linkage(x)
-
-tau.run('OurMain()')
