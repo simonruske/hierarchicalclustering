@@ -45,8 +45,8 @@ bool PriorityQueue::isStrictlyGreater(int first_index, int second_index)
 
 int PriorityQueue::propagateDown(int startingIndex)
 {    
-    int leftChildIndex = 2 * startingIndex;
-    int rightChildIndex = 2 * startingIndex + 1;
+    int leftChildIndex = 2 * startingIndex + 1;
+    int rightChildIndex = 2 * startingIndex + 2;
 
     if (leftChildIndex >= this->size) 
         return startingIndex;
