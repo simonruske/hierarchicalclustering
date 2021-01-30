@@ -10,7 +10,26 @@ namespace TestHierarchicalClustering
 	TEST_CLASS(TestNode)
 	{
 	public:
-		TEST_METHOD(TestQueueConstructor_TwoNodesInOrder_CreatesMinHeap)
+
+		TEST_METHOD(TestQueue_Constructor_SimplExample_HasCorrectProperties)
+		{
+			int size = 2;
+			float* minimumDistances = new float[2]{ 0.45f, 0.35f };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			int* indices = queue.GetIndices();
+			Assert::AreEqual(1, indices[0]);
+			Assert::AreEqual(0, indices[1]);
+
+			float* distances = queue.GetMinimumDistances();
+			Assert::AreEqual(0.45f, distances[0]);
+			Assert::AreEqual(0.35f, distances[1]);
+
+			Assert::AreEqual(2, queue.GetCurrentSize());
+			Assert::AreEqual(2, queue.GetCapacity());
+		}
+
+		TEST_METHOD(TestQueue_Constructor_TwoNodesInOrder_CreatesMinHeap)
 		{
 			// Act
 			int size = 2;
@@ -19,7 +38,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
-		TEST_METHOD(TestQueueConstructor_TwoNodesOutOfOrder_CreatesMinHeap)
+		TEST_METHOD(TestQueue_Constructor_TwoNodesOutOfOrder_CreatesMinHeap)
 		{
 			// Act
 			int size = 2;
@@ -28,7 +47,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
-		TEST_METHOD(TestQueueConstructor_ThreeNodesAlreadyCorrect_CreatesMinHeap)
+		TEST_METHOD(TestQueue_Constructor_ThreeNodesAlreadyCorrect_CreatesMinHeap)
 		{
 			// Act
 			int size = 3;
@@ -37,7 +56,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
-		TEST_METHOD(TestQueueConstructor_ThreeNodes_ChildrenOutOfOrder_CreatesMinHeap)
+		TEST_METHOD(TestQueue_Constructor_ThreeNodes_ChildrenOutOfOrder_CreatesMinHeap)
 		{
 			// Act
 			int size = 3;
@@ -46,7 +65,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
-		TEST_METHOD(TestQueueConstructor_RandomDistances_CreatesMinHeap)
+		TEST_METHOD(TestQueue_Constructor_RandomDistances_CreatesMinHeap)
 		{
 			std::srand(8455624);
 			int numberOfRepititions = 1000;
@@ -67,7 +86,60 @@ namespace TestHierarchicalClustering
 			}
 		}
 
-		TEST_METHOD(IsMinHeapSanityCheck_MaximumHeap_ReturnsFalse)
+		TEST_METHOD(TestQueue_Constructor_MaxHeapInput_CreatesMinHeapInQueue)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			//Queue should original have minimum 1 from position 6 in the distance array
+			float originalMinimum;
+			int originalMinimumIndex;
+			queue.GetMinimum(&originalMinimumIndex, &originalMinimum);
+
+			Assert::AreEqual(1.0f, originalMinimum);
+			Assert::AreEqual(6, originalMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToLessThanChildren_KeepsSameMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size]{ 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			queue.UpdateMinimum(1.5f);
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(1.5f, currentMinimum);
+			Assert::AreEqual(6, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToGreaterThanSecondMinimum_GetsUpdatedMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			queue.UpdateMinimum(2.5f);
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(2.0f, currentMinimum);
+			Assert::AreEqual(7, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(IsMinimumHeapSanityCheck_MaximumHeap_ReturnsFalse)
 		{
 			int size = 9;
 			int* indices = new int[9] {0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -76,7 +148,7 @@ namespace TestHierarchicalClustering
 			Assert::IsFalse(IsMinimumHeap(size, indices, minimumDistances));
 		}
 
-		TEST_METHOD(IsMinHeapSanityCheck_MinimumHeap_ReturnsTrue)
+		TEST_METHOD(IsMinimumHeapSanityCheck_MinimumHeap_ReturnsTrue)
 		{
 			int size = 9;
 			int* indices = new int[9]{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -85,7 +157,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(IsMinimumHeap(size, indices, minimumDistances));
 		}
 
-		TEST_METHOD(IsMinHeapSanityCheck_ModificationOnMinHeap_ReturnsFalse)
+		TEST_METHOD(IsMinimumHeapSanityCheck_ModificationOnMinHeap_ReturnsFalse)
 		{
 			int size = 9;
 			int* indices = new int[9]{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -127,7 +199,7 @@ namespace TestHierarchicalClustering
 			Assert::IsFalse(IsMinimumHeap(size, indices, minimumDistances));
 		}
 
-		TEST_METHOD(IsMinHeapSanityCheck_EverythingEqual_ReturnsTrue)
+		TEST_METHOD(IsMinimumHeapSanityCheck_EverythingEqual_ReturnsTrue)
 		{
 			int size = 9;
 			int* indices = new int[9]{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -138,7 +210,7 @@ namespace TestHierarchicalClustering
 	private: 
 		static bool IsMinimumHeap(PriorityQueue queue)
 		{
-			int size = queue.GetSize();
+			int size = queue.GetCurrentSize();
 			int* indices = queue.GetIndices();
 			float* minimumDistances = queue.GetMinimumDistances();
 		
