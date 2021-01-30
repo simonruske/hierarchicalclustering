@@ -11,6 +11,8 @@ namespace TestHierarchicalClustering
 	{
 	public:
 
+		#pragma region Constructor
+
 		TEST_METHOD(TestQueue_Constructor_SimplExample_HasCorrectProperties)
 		{
 			int size = 2;
@@ -103,6 +105,10 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
+		#pragma endregion
+
+		#pragma region UpdateMinimum
+
 		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToLessThanChildren_KeepsSameMinimum)
 		{
 			//Arrange
@@ -138,6 +144,10 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(7, currentMinimumIndex);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
+
+		#pragma endregion
+
+		#pragma region IsMinimumHeap
 
 		TEST_METHOD(IsMinimumHeapSanityCheck_MaximumHeap_ReturnsFalse)
 		{
@@ -206,6 +216,8 @@ namespace TestHierarchicalClustering
 			float* minimumDistances = new float[9]{ 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 			Assert::IsTrue(IsMinimumHeap(size, indices, minimumDistances));
 		}
+
+		#pragma endregion
 
 	private: 
 		static bool IsMinimumHeap(PriorityQueue queue)
