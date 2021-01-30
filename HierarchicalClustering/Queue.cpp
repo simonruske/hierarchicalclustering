@@ -6,14 +6,32 @@
 
 PriorityQueue::PriorityQueue(float minimumDistances[], int size)
 {
-	this->size = size;
+	this->currentSize = size;
+    this->capacity = size;
 	this->minimumDistances = minimumDistances;
-	this->indices = new int[this->size];
-	for (int i = 0; i < this->size; i++)
+	this->indices = new int[this->currentSize];
+	for (int i = 0; i < this->currentSize; i++)
 	{
 		indices[i] = i;
 	}
     this->heapify();
+}
+
+void PriorityQueue::RemoveMinimum()
+{
+
+}
+
+void PriorityQueue::GetMinimum(int* index, float* minimum_distance)
+{
+    *index = this->indices[0];
+    *minimum_distance = this->minimumDistances[*index];
+}
+
+void PriorityQueue::UpdateMinimum(float distance)
+{
+    this->minimumDistances[this->indices[0]] = distance;
+    this->fix(0);
 }
 
 int* PriorityQueue::GetIndices()
@@ -26,9 +44,14 @@ float* PriorityQueue::GetMinimumDistances()
 	return this->minimumDistances;
 }
 
-int PriorityQueue::GetSize()
+int PriorityQueue::GetCurrentSize()
 {
-	return this->size;
+	return this->currentSize;
+}
+
+int PriorityQueue::GetCapacity()
+{
+    return this->capacity;
 }
 
 void PriorityQueue::swap(int first_index, int second_index)
@@ -43,12 +66,29 @@ bool PriorityQueue::isStrictlyGreater(int first_index, int second_index)
     return this->minimumDistances[this->indices[first_index]] > this->minimumDistances[this->indices[second_index]];
 }
 
+int PriorityQueue::propagateUp(int startingIndex)
+{
+    if (startingIndex == 0)
+    {
+        return 0;
+    }
+
+    int parentIndex = startingIndex / 2;
+
+    if (this->isStrictlyGreater(parentIndex, startingIndex))
+    {
+        this->swap(parentIndex, startingIndex);
+        return parentIndex;
+    }
+    return startingIndex;
+}
+
 int PriorityQueue::propagateDown(int startingIndex)
 {    
     int leftChildIndex = 2 * startingIndex + 1;
     int rightChildIndex = 2 * startingIndex + 2;
 
-    if (leftChildIndex >= this->size) 
+    if (leftChildIndex >= this->currentSize) 
         return startingIndex;
 
     int minimumIndex = startingIndex;
@@ -58,7 +98,7 @@ int PriorityQueue::propagateDown(int startingIndex)
         minimumIndex = leftChildIndex;
     }
 
-    if ((rightChildIndex < this->size) && (this->isStrictlyGreater(minimumIndex, rightChildIndex)))
+    if ((rightChildIndex < this->currentSize) && (this->isStrictlyGreater(minimumIndex, rightChildIndex)))
     {
         minimumIndex = rightChildIndex;
     }
@@ -84,32 +124,8 @@ void PriorityQueue::fix(int index)
 
 void PriorityQueue::heapify()
 {
-    for (int i = this->size / 2; i >= 0; i--)
+    for (int i = this->currentSize / 2; i >= 0; i--)
     {
         this->fix(i);
     }
 }
-
-//    /// <summary>
-//    /// Swaps an element with its parent and returns its new location
-//    /// </summary>
-//    /// <param name="vec"></param>
-//    /// <param name="queue"></param>
-//    /// <param name="elem"></param>
-//    /// <returns></returns>
-//    int BubbleUp(float* vec, int* queue, int elem)
-//    {
-//        if (elem == 1)  // If already at the top then stop
-//            return 1;
-//
-//        int parent = elem / 2;
-//
-//        if (vec[queue[parent]] > vec[queue[elem]]) // If Parent is bigger than child swap
-//        {
-//            Swap(parent, elem);
-//            return parent;
-//        }
-//        return elem;
-//
-//    }
-//};
