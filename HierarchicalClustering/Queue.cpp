@@ -3,6 +3,7 @@
 #include "Node.h"
 #include <string>
 #include <list>
+#include <stdexcept>
 
 PriorityQueue::PriorityQueue(float minimumDistances[], int size)
 {
@@ -19,17 +20,35 @@ PriorityQueue::PriorityQueue(float minimumDistances[], int size)
 
 void PriorityQueue::RemoveMinimum()
 {
+    if (this->currentSize == 0)
+    {
+        throw std::out_of_range("There are not any nodes in the queue to remove");
+    }
 
+    this->indices[0] = this->indices[this->currentSize - 1];
+    this->currentSize -= 1;
+    this->fix(0);
+    
 }
 
 void PriorityQueue::GetMinimum(int* index, float* minimum_distance)
 {
+    if (this->currentSize == 0)
+    {
+        throw std::out_of_range("There are not any nodes in the queue");
+    }
+    
     *index = this->indices[0];
     *minimum_distance = this->minimumDistances[*index];
 }
 
 void PriorityQueue::UpdateMinimum(float distance)
 {
+    if (this->currentSize == 0)
+    {
+        throw std::out_of_range("There are not any nodes in the queue");
+    }
+
     this->minimumDistances[this->indices[0]] = distance;
     this->fix(0);
 }

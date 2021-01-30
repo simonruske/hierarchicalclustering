@@ -105,6 +105,16 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 		}
 
+		TEST_METHOD(TestQueue_Constructor_Empty_CreatesEmptyHeap)
+		{
+			int size = 0;
+			float* minimumDistances = new float[0]{};
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			Assert::AreEqual(0, queue.GetCapacity());
+			Assert::AreEqual(0, queue.GetCurrentSize());
+		}
+
 		#pragma endregion
 
 		#pragma region UpdateMinimum
@@ -143,6 +153,129 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(2.0f, currentMinimum);
 			Assert::AreEqual(7, currentMinimumIndex);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(TestQueue_UpdateMinimum_EmptyQueue_ThrowsError)
+		{
+			auto action = [] {
+
+				int size = 1;
+				float* minimumDistances = new float[size] { 1 };
+				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+				queue.RemoveMinimum();
+				Assert::AreEqual(0, queue.GetCurrentSize());
+
+				queue.UpdateMinimum(0.25);
+
+			};
+
+			Assert::ExpectException<std::out_of_range>(action);
+		}
+
+		#pragma endregion
+
+		#pragma region GetMinimum
+
+		TEST_METHOD(TestQueue_GetMinimum_EmptyQueue_ThrowsError)
+		{
+			auto action = [] {
+				int size = 1;
+				float* minimumDistances = new float[size] { 1 };
+				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+				queue.RemoveMinimum();
+				Assert::AreEqual(0, queue.GetCurrentSize());
+
+				int index;
+				float minimumDistance;
+				queue.GetMinimum(&index, &minimumDistance);
+
+			};
+
+			Assert::ExpectException<std::out_of_range>(action);
+		}
+
+		#pragma endregion
+
+		#pragma region RemoveMinimum
+
+		TEST_METHOD(TestQueue_RemoveMinimum_RemoveSuccessiveElements_MinimumIsCorrectThroughout)
+		{
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			int index;
+			float minimumDistance;
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(7, index);
+			Assert::AreEqual(2.0f, minimumDistance);
+			Assert::AreEqual(8, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(4, index);
+			Assert::AreEqual(3.0f, minimumDistance);
+			Assert::AreEqual(7, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(8, index);
+			Assert::AreEqual(7.0f, minimumDistance);
+			Assert::AreEqual(6, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(3, index);
+			Assert::AreEqual(17.0f, minimumDistance);
+			Assert::AreEqual(5, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(1, index);
+			Assert::AreEqual(19.0f, minimumDistance);
+			Assert::AreEqual(4, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(5, index);
+			Assert::AreEqual(25.0f, minimumDistance);
+			Assert::AreEqual(3, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(2, index);
+			Assert::AreEqual(36.0f, minimumDistance);
+			Assert::AreEqual(2, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			queue.GetMinimum(&index, &minimumDistance);
+			Assert::AreEqual(0, index);
+			Assert::AreEqual(100.0f, minimumDistance);
+			Assert::AreEqual(1, queue.GetCurrentSize());
+
+			queue.RemoveMinimum();
+			Assert::AreEqual(0, queue.GetCurrentSize());
+		}
+
+		TEST_METHOD(TestQueue_RemoveMinimum_EmptyQueue_ThrowsError)
+		{
+			auto action = [] { 
+				int size = 1;
+				float* minimumDistances = new float[size] { 1 };
+				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+				queue.RemoveMinimum();
+				Assert::AreEqual(0, queue.GetCurrentSize());
+
+				queue.RemoveMinimum();
+			
+			};
+
+			Assert::ExpectException<std::out_of_range>(action);
 		}
 
 		#pragma endregion
