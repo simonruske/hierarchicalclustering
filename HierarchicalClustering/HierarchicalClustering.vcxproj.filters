@@ -27,6 +27,12 @@
     <ClCompile Include="Read.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Distance.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Distance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Queue.h">

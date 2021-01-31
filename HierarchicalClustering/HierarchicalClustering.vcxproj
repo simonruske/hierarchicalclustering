@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Distance.cpp" />
+    <ClCompile Include="Distance.h" />
     <ClCompile Include="GenericLinkage.cpp" />
     <ClCompile Include="HierarchicalClustering.cpp" />
     <ClCompile Include="Queue.cpp" />
