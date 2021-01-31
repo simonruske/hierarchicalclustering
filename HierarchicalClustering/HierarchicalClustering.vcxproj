@@ -143,6 +143,8 @@
     <ClCompile Include="Distance.h" />
     <ClCompile Include="GenericLinkage.cpp" />
     <ClCompile Include="HierarchicalClustering.cpp" />
+    <ClCompile Include="Initialise.cpp" />
+    <ClCompile Include="Initialise.h" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Read.cpp" />
   </ItemGroup>

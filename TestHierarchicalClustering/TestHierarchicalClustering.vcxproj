@@ -164,6 +164,7 @@
     </ClCompile>
     <ClCompile Include="TestDistance.cpp" />
     <ClCompile Include="TestGenericLinkage.cpp" />
+    <ClCompile Include="TestInitialise.cpp" />
     <ClCompile Include="TestQueue.cpp" />
     <ClCompile Include="TestRead.cpp" />
   </ItemGroup>

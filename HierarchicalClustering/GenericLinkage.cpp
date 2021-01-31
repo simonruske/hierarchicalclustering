@@ -1,6 +1,6 @@
 #include "GenericLinkage.h"
 #include <unordered_set>
-#include "Distance.h";
+#include "Distance.h"
 #include "Queue.h"
 
 void GetNextClustersToMerge(
