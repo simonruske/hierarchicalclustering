@@ -142,10 +142,12 @@
     <ClCompile Include="GenericLinkage.cpp" />
     <ClCompile Include="HierarchicalClustering.cpp" />
     <ClCompile Include="Queue.cpp" />
+    <ClCompile Include="Read.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GenericLinkage.h" />
     <ClInclude Include="Queue.h" />
+    <ClInclude Include="Read.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
