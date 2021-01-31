@@ -139,10 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GenericLinkage.cpp" />
     <ClCompile Include="HierarchicalClustering.cpp" />
     <ClCompile Include="Queue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GenericLinkage.h" />
     <ClInclude Include="Queue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
