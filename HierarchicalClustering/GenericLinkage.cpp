@@ -1,7 +1,89 @@
 #include "GenericLinkage.h"
-#include <unordered_set>
 #include "Distance.h"
-#include "Queue.h"
+#include "Initialise.h"
+#include <iostream>
+
+GenericLinkageStatus::GenericLinkageStatus(int numberOfRows, int numberOfColumns, float* data) : queue(new float[0]{}, 0)
+{
+	this->numberOfRows = numberOfRows;
+	this->numberOfColumns = numberOfColumns;
+	this->data = data;
+
+	InitialiseClusterLabels(&this->clusterLabels, numberOfRows);
+
+	int minimumDistanceSizeLength = 2 * numberOfRows - 1;
+	this->minimumDistances = new float[minimumDistanceSizeLength];
+	this->nearestNeighbours = new int[minimumDistanceSizeLength];
+	InitialiseNearestNeighbours(numberOfRows, numberOfColumns, this->nearestNeighbours, this->minimumDistances, this->data);
+
+	this->queue = PriorityQueue(this->minimumDistances, numberOfRows - 1);
+
+	int linkageSize = (numberOfRows - 1) * 3;
+	this->linkage = new float[linkageSize];
+
+	int sizesLength = 2 * numberOfRows;
+	this->sizes = new int[sizesLength];
+	InitialiseSizes(sizes, numberOfRows);
+}
+
+void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, int newLocation)
+{
+	this->sizes[newLocation] = this->sizes[firstLocation] + this->sizes[secondLocation];
+}
+
+void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondCluster, float distance)
+{
+	this->linkage[depth] = firstCluster;
+	this->linkage[depth + 1] = secondCluster;
+	this->linkage[depth + 2] = distance;
+}
+
+std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()
+{
+	return this->clusterLabels;
+}
+
+PriorityQueue GenericLinkageStatus::GetQueue()
+{
+	return this->queue;
+}
+
+float* GenericLinkageStatus::GetData()
+{
+	return this->data;
+}
+
+float* GenericLinkageStatus::GetMinimumDistances()
+{
+	return this->minimumDistances;
+}
+
+int* GenericLinkageStatus::GetNearestNeighbours()
+{
+	return this->nearestNeighbours;
+}
+
+float* GenericLinkageStatus::GetLinkage()
+{
+	return this->linkage;
+}
+
+int GenericLinkageStatus::GetSize(int clusterIndex)
+{
+	return this->sizes[clusterIndex];
+}
+
+void GenericLinkageStatus::PrintLinkage()
+{
+	for (int i = 0; i < this->numberOfRows - 1; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			std::cout << linkage[i * this->numberOfRows + j] << ", ";
+		}
+		std::cout << linkage[i * this->numberOfRows + 2] << std::endl;
+	}
+}
 
 void GetNextClustersToMerge(
 	std::unordered_set<int> clusterIndices,

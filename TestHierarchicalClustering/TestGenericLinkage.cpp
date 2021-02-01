@@ -11,6 +11,124 @@ namespace TestHierarchicalClustering
 	{
 	public:
 
+		#pragma region Status
+
+		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_Construction)
+		{
+			int numberOfRows = 4;
+			int numberOfColumns = 4;
+
+			float* data = new float[16]
+			{
+				0.25f, 0.74f, 0.36f, 0.45f,
+				0.12f, 0.94f, 0.38f, 0.39f,
+				0.93f, 0.54f, 0.69f, 0.49f,
+				0.39f, 0.96f, 0.39f, 0.20f,
+			};
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+
+			// Labels
+			std::unordered_set<int> labels = status.GetClusterLabels();
+			Assert::AreEqual(4, (int)labels.size());
+			for (int i = 0; i < 4; i++)
+			{
+				Assert::AreEqual(1, (int)labels.count(i));
+			}
+
+			// Data
+			float* actualData = status.GetData();
+			float actualTotal = 0;
+			float expectedTotal = 0;
+			for (int i = 0; i < 16; i++)
+			{
+				actualTotal += actualData[i];
+				expectedTotal += data[i];
+			}
+			Assert::AreEqual(expectedTotal, actualTotal);
+
+			// Minimum distances - compare with the minimum entries in the result from scipy.spatial.distance.pdist
+			int* expectedNearestNeighbours = new int[3]{ 1,       3,       3 };
+			float* expectedMinimumDistances = new float[3]{ 0.0609f, 0.1095f, 0.6421f };
+
+			int* actualNearestNeighbours = status.GetNearestNeighbours();
+			float* actualMinimumDistances = status.GetMinimumDistances();
+
+			for (int i = 0; i < 3; i++)
+			{
+				Assert::AreEqual(expectedNearestNeighbours[i], actualNearestNeighbours[i]);
+				Assert::IsTrue(std::abs(expectedMinimumDistances[i] - actualMinimumDistances[i]) < this->tolerance);
+			}
+
+			// Queue
+			PriorityQueue queue = status.GetQueue();
+
+			int index;
+			float distance;
+			queue.GetMinimum(&index, &distance);
+			Assert::AreEqual(0, index);
+			Assert::IsTrue(std::abs(0.0609f - distance) < this->tolerance);
+
+			// Sizes
+			for (int i = 0; i < 4; i++)
+			{
+				Assert::AreEqual(1, status.GetSize(i));
+			}
+		}
+
+		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_CombineSizes)
+		{
+			//Arrange
+			int numberOfRows = 4;
+			int numberOfColumns = 4;
+
+			float* data = new float[16]
+			{
+				0.25f, 0.74f, 0.36f, 0.45f,
+				0.12f, 0.94f, 0.38f, 0.39f,
+				0.93f, 0.54f, 0.69f, 0.49f,
+				0.39f, 0.96f, 0.39f, 0.20f,
+			};
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+
+			//Act
+			status.CombineSizes(0, 1, 4);
+
+			//Assert
+			Assert::AreEqual(2, status.GetSize(4));
+		}
+
+		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_SetLinkage)
+		{
+			//Arrange
+			int numberOfRows = 4;
+			int numberOfColumns = 4;
+
+			float* data = new float[16]
+			{
+				0.25f, 0.74f, 0.36f, 0.45f,
+				0.12f, 0.94f, 0.38f, 0.39f,
+				0.93f, 0.54f, 0.69f, 0.49f,
+				0.39f, 0.96f, 0.39f, 0.20f,
+			};
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+
+			//Act
+			status.SetLinkage(0, 0, 1, 0.0609f);
+
+			//Assert
+			float* linkage = status.GetLinkage();
+
+			Assert::AreEqual(0.0f   , linkage[0]);
+			Assert::AreEqual(1.0f   , linkage[1]);
+			Assert::AreEqual(0.0609f, linkage[2]);
+
+		}
+
+		#pragma endregion
+
 		#pragma region GetNextClustersToMerge
 		TEST_METHOD(TestGenericLinkage_GetNextClustersToMerge_NearestNeighbourStillExists)
 		{
