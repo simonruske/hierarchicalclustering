@@ -1,4 +1,10 @@
 #pragma once
+#include <unordered_set>
+
+void InitialiseClusterLabels(std::unordered_set<int>* clusterLabels, int numberOfLabels);
+
+void InitialiseSizes(int* sizes, int numberOfRows);
+
 void InitialiseNearestNeighbours(
 	int numberOfRows,
 	int numberOfColumns,

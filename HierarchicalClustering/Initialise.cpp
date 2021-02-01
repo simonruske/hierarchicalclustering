@@ -2,6 +2,22 @@
 #include "Distance.h"
 #include <limits>
 
+void InitialiseClusterLabels(std::unordered_set<int> *clusterLabels, int numberOfLabels)
+{
+	for (int i = 0; i < numberOfLabels; i++)
+	{
+		(*clusterLabels).insert(i);
+	}
+}
+
+void InitialiseSizes(int* sizes, int numberOfRows)
+{
+	for (int i = 0; i <= numberOfRows; i++)
+	{
+		sizes[i] = 1;
+	}
+}
+
 void InitialiseNearestNeighbours(
 	int numberOfRows,
 	int numberOfColumns,

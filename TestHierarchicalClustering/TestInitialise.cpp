@@ -11,6 +11,46 @@ namespace TestHierarchicalClustering
 	{
 	public:
 		
+		#pragma region InitialiseClusterLabels
+
+		TEST_METHOD(TestInitialise_InitialiseClusterLabels_ExampleSet)
+		{
+			//Arrange
+			auto labels = std::unordered_set<int>();
+
+			//Act
+			InitialiseClusterLabels(&labels, 4);
+
+			//Assert
+			Assert::AreEqual(4, (int)labels.size());
+
+			for (int i = 0; i < 4; i++)
+			{
+				Assert::AreEqual(1, (int)labels.count(i));
+			}
+		}
+
+		#pragma endregion
+
+		#pragma region InitialiseSizes
+
+		TEST_METHOD(TestInitialise_IntialiseSizes_Example)
+		{
+			//Arrange
+			int* sizes = new int[8];
+
+			//Act
+			InitialiseSizes(sizes, 4);
+
+			//Assert
+			for (int i = 0; i < 4; i++)
+			{
+				Assert::AreEqual(1, sizes[i]);
+			}
+		}
+
+		#pragma endregion
+
 		#pragma region InitialiseNearestNeighbours
 
 		TEST_METHOD(TestInitialise_InitialiseNearestNeighbours_ExampleProblem)
@@ -34,8 +74,8 @@ namespace TestHierarchicalClustering
 			InitialiseNearestNeighbours(numberOfRows, numberOfColumns, nearestNeighbours, minimumDistances, data);
 
 			// Assert - compare with the minimum entries in the result from scipy.spatial.distance.pdist
-			int* expectedNearestNeighbours  = new int[3]   {       1,      3,      3 };
-			float* expectedMinimumDistances = new float[3] { 0.0609f, 0.1095, 0.6421 };
+			int* expectedNearestNeighbours  = new int[3]   {       1,       3,       3 };
+			float* expectedMinimumDistances = new float[3] { 0.0609f, 0.1095f, 0.6421f };
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -43,9 +83,6 @@ namespace TestHierarchicalClustering
 				Assert::IsTrue(std::abs(expectedMinimumDistances[i] - minimumDistances[i]) < this->tolerance);
 			}
 		}
-
-
-
 
 		#pragma endregion
 
