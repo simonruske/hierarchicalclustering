@@ -1,3 +1,5 @@
+#include "Distance.h"
+
 float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns)
 {
 	float distance = 0;

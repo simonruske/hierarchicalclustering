@@ -29,5 +29,4 @@ private:
     int propagateDown(int starting_index);
     void fix(int);
     void heapify();
-    
 };

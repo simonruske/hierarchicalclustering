@@ -140,16 +140,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Distance.cpp" />
-    <ClCompile Include="Distance.h" />
     <ClCompile Include="GenericLinkage.cpp" />
     <ClCompile Include="HierarchicalClustering.cpp" />
     <ClCompile Include="Initialise.cpp" />
-    <ClCompile Include="Initialise.h" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Read.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Distance.h" />
     <ClInclude Include="GenericLinkage.h" />
+    <ClInclude Include="Initialise.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Read.h" />
   </ItemGroup>

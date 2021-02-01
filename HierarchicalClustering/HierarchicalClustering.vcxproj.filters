@@ -27,14 +27,8 @@
     <ClCompile Include="Read.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Initialise.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="Initialise.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Distance.h">
-      <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="Distance.cpp">
       <Filter>Source Files</Filter>
@@ -48,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Read.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Initialise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
