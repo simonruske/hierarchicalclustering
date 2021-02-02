@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_set>
+#include <functional>
 #include "Queue.h"
 
 class GenericLinkageStatus
@@ -9,6 +10,7 @@ public:
 
 	void CombineSizes(int firstLocation, int secondLocation, int newLocation);
 	void SetLinkage(int depth, int firstCluster, int secondCluster, float distance);
+	void InsertNewCluster(int depth, int firstCluster, int secondCluster);
 
 	std::unordered_set<int> GetClusterLabels();
 	PriorityQueue GetQueue();
@@ -30,6 +32,8 @@ private:
 	float* linkage;
 	int numberOfRows;
 	int numberOfColumns;
+
+	std::function<void(float*, int*, int, int, int, int)> newClusterUpdate;
 };
 
 void GetNextClustersToMerge(

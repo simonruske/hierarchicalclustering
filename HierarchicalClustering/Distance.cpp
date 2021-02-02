@@ -10,3 +10,14 @@ float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberO
 	}
 	return distance;
 }
+
+void CentroidUpdate(float* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex)
+{
+	for (int i = 0; i < numberOfColumns; i++)
+	{
+		data[newIndex * numberOfColumns + i] = (
+			data[firstIndex * numberOfColumns + i] * sizes[firstIndex] +
+			data[secondIndex * numberOfColumns + i] * sizes[secondIndex]) /
+			sizes[newIndex];
+	}
+}

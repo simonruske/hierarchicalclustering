@@ -24,6 +24,8 @@ GenericLinkageStatus::GenericLinkageStatus(int numberOfRows, int numberOfColumns
 	int sizesLength = 2 * numberOfRows;
 	this->sizes = new int[sizesLength];
 	InitialiseSizes(sizes, numberOfRows);
+
+	this->newClusterUpdate = CentroidUpdate;
 }
 
 void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, int newLocation)
@@ -36,6 +38,17 @@ void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondClu
 	this->linkage[depth] = firstCluster;
 	this->linkage[depth + 1] = secondCluster;
 	this->linkage[depth + 2] = distance;
+}
+
+void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster)
+{
+	this->newClusterUpdate(
+		this->data,
+		this->sizes,
+		this->numberOfColumns,
+		firstCluster,
+		secondCluster,
+		this->numberOfRows + depth);
 }
 
 std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()
