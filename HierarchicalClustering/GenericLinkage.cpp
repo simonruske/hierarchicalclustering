@@ -79,9 +79,9 @@ void GenericLinkageStatus::PrintLinkage()
 	{
 		for (int j = 0; j < 2; j++)
 		{
-			std::cout << linkage[i * this->numberOfRows + j] << ", ";
+			std::cout << linkage[i * this->numberOfColumns + j] << ", ";
 		}
-		std::cout << linkage[i * this->numberOfRows + 2] << std::endl;
+		std::cout << linkage[i * this->numberOfColumns + 2] << std::endl;
 	}
 }
 
