@@ -54,7 +54,7 @@ namespace TestHierarchicalClustering
 			CentroidUpdate(data, sizes, 4, 0, 1, 4);
 
 			//Assert - new centre should be the average of point 0, and 1 and stored in row 4
-			float* expectedNewCentre = new float[4]{0.185f, 0.84f, 0.37f, 0.42 };
+			float* expectedNewCentre = new float[4]{0.185f, 0.84f, 0.37f, 0.42f };
 
 			wchar_t buffer[100];
 			for (int i = 0; i < 4; i++)
