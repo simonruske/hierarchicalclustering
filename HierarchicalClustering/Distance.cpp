@@ -11,6 +11,16 @@ float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberO
 	return distance;
 }
 
+/// <summary>
+/// The update should only be called after the sizes have been updated
+/// </summary>
+/// <param name="data"></param>
+/// <param name="sizes"></param>
+/// <param name="numberOfColumns"></param>
+/// <param name="firstIndex"></param>
+/// <param name="secondIndex"></param>
+/// <param name="newIndex"></param>
+
 void CentroidUpdate(float* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex)
 {
 	for (int i = 0; i < numberOfColumns; i++)

@@ -40,8 +40,11 @@ void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondClu
 	this->linkage[depth + 2] = distance;
 }
 
-void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster)
+void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance)
 {
+	this->SetLinkage(depth, firstCluster, secondCluster, distance);
+	this->CombineSizes(this->numberOfRows + depth, firstCluster, secondCluster);
+
 	this->newClusterUpdate(
 		this->data,
 		this->sizes,
