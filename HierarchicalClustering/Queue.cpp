@@ -23,7 +23,7 @@ void PriorityQueue::RemoveMinimum()
 
     this->indices[0] = this->indices[this->currentSize - 1];
     this->currentSize -= 1;
-    this->fix(0);
+    this->fixDownwards(0);
     
 }
 
@@ -46,7 +46,34 @@ void PriorityQueue::UpdateMinimum(float distance)
     }
 
     this->minimumDistances[this->indices[0]] = distance;
-    this->fix(0);
+    this->fixDownwards(0);
+}
+
+void PriorityQueue::ReplaceElement(int originalLabel, int newLabel, float newMinimumDistance)
+{
+    this->minimumDistances[newLabel] = newMinimumDistance;
+
+    bool found = false;
+    int originalIndex;
+    for (originalIndex = 0; originalIndex < this->currentSize; originalIndex++)
+    {
+        if (this->indices[originalIndex] == originalLabel)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+    {
+        throw std::runtime_error("The original node was not found in the queue");
+    }
+
+    int currentIndex = this->fixUpwards(originalIndex);
+    if (currentIndex == originalIndex)
+    {
+        this->fixDownwards(originalIndex);
+    }
 }
 
 int* PriorityQueue::GetIndices()
@@ -126,7 +153,7 @@ int PriorityQueue::propagateDown(int startingIndex)
     return minimumIndex;
 }
 
-void PriorityQueue::fix(int index)
+int PriorityQueue::fixDownwards(int index)
 {
     int previous_index;
     int current_index = index;
@@ -135,12 +162,25 @@ void PriorityQueue::fix(int index)
         previous_index = current_index;
         current_index = this->propagateDown(previous_index);
     } while (previous_index != current_index);
+    return current_index;
+}
+
+int PriorityQueue::fixUpwards(int index)
+{
+    int previous_index;
+    int current_index = index;
+    do
+    {
+        previous_index = current_index;
+        current_index = this->propagateUp(previous_index);
+    } while (previous_index != current_index);
+    return current_index;
 }
 
 void PriorityQueue::heapify()
 {
     for (int i = this->currentSize / 2; i >= 0; i--)
     {
-        this->fix(i);
+        this->fixDownwards(i);
     }
 }

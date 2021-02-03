@@ -9,6 +9,7 @@ public:
     void GetMinimum(int* index, float* minimum_distance);
     void UpdateMinimum(float distance);
     void RemoveMinimum();
+    void ReplaceElement(int originalLabel, int newLabel, float newMinimumDistance);
     
     int* GetIndices();
     float* GetMinimumDistances();
@@ -27,6 +28,7 @@ private:
     bool isStrictlyGreater(int first_index, int second_index);
     int propagateUp(int start_index);
     int propagateDown(int starting_index);
-    void fix(int);
+    int fixUpwards(int index);
+    int fixDownwards(int index);
     void heapify();
 };
