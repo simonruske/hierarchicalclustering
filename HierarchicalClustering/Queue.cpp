@@ -19,6 +19,7 @@ void PriorityQueue::RemoveMinimum()
     if (this->currentSize == 0)
     {
         throw std::out_of_range("There are not any nodes in the queue to remove");
+        std::exit(EXIT_FAILURE);
     }
 
     this->indices[0] = this->indices[this->currentSize - 1];
@@ -31,6 +32,7 @@ void PriorityQueue::GetMinimum(int* index, float* minimum_distance)
     if (this->currentSize == 0)
     {
         throw std::out_of_range("There are not any nodes in the queue");
+        std::exit(EXIT_FAILURE);
     }
     
     *index = this->indices[0];
@@ -42,6 +44,7 @@ void PriorityQueue::UpdateMinimum(float distance)
     if (this->currentSize == 0)
     {
         throw std::out_of_range("There are not any nodes in the queue");
+        std::exit(EXIT_FAILURE);
     }
 
     this->minimumDistances[this->indices[0]] = distance;
@@ -66,6 +69,7 @@ void PriorityQueue::ReplaceElement(int originalLabel, int newLabel, float newMin
     if (!found)
     {
         throw std::runtime_error("The original node was not found in the queue");
+        std::exit(EXIT_FAILURE);
     }
 
     this->indices[originalIndex] = newLabel;
