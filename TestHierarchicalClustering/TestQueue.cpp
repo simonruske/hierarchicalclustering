@@ -117,87 +117,6 @@ namespace TestHierarchicalClustering
 
 		#pragma endregion
 
-		#pragma region UpdateMinimum
-
-		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToLessThanChildren_KeepsSameMinimum)
-		{
-			//Arrange
-			int size = 9;
-			float* minimumDistances = new float[size]{ 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
-
-			queue.UpdateMinimum(1.5f);
-
-			float currentMinimum;
-			int currentMinimumIndex;
-			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
-
-			Assert::AreEqual(1.5f, currentMinimum);
-			Assert::AreEqual(6, currentMinimumIndex);
-			Assert::IsTrue(this->IsMinimumHeap(queue));
-		}
-
-		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToGreaterThanSecondMinimum_GetsUpdatedMinimum)
-		{
-			//Arrange
-			int size = 9;
-			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
-
-			queue.UpdateMinimum(2.5f);
-
-			float currentMinimum;
-			int currentMinimumIndex;
-			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
-
-			Assert::AreEqual(2.0f, currentMinimum);
-			Assert::AreEqual(7, currentMinimumIndex);
-			Assert::IsTrue(this->IsMinimumHeap(queue));
-		}
-
-		TEST_METHOD(TestQueue_UpdateMinimum_EmptyQueue_ThrowsError)
-		{
-			auto action = [] {
-
-				int size = 1;
-				float* minimumDistances = new float[size] { 1 };
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
-
-				queue.RemoveMinimum();
-				Assert::AreEqual(0, queue.GetCurrentSize());
-
-				queue.UpdateMinimum(0.25);
-
-			};
-
-			Assert::ExpectException<std::out_of_range>(action);
-		}
-
-		#pragma endregion
-
-		#pragma region GetMinimum
-
-		TEST_METHOD(TestQueue_GetMinimum_EmptyQueue_ThrowsError)
-		{
-			auto action = [] {
-				int size = 1;
-				float* minimumDistances = new float[size] { 1 };
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
-
-				queue.RemoveMinimum();
-				Assert::AreEqual(0, queue.GetCurrentSize());
-
-				int index;
-				float minimumDistance;
-				queue.GetMinimum(&index, &minimumDistance);
-
-			};
-
-			Assert::ExpectException<std::out_of_range>(action);
-		}
-
-		#pragma endregion
-
 		#pragma region RemoveMinimum
 
 		TEST_METHOD(TestQueue_RemoveMinimum_RemoveSuccessiveElements_MinimumIsCorrectThroughout)
@@ -263,7 +182,7 @@ namespace TestHierarchicalClustering
 
 		TEST_METHOD(TestQueue_RemoveMinimum_EmptyQueue_ThrowsError)
 		{
-			auto action = [] { 
+			auto action = [] {
 				int size = 1;
 				float* minimumDistances = new float[size] { 1 };
 				PriorityQueue queue = PriorityQueue(minimumDistances, size);
@@ -272,10 +191,263 @@ namespace TestHierarchicalClustering
 				Assert::AreEqual(0, queue.GetCurrentSize());
 
 				queue.RemoveMinimum();
-			
+
 			};
 
 			Assert::ExpectException<std::out_of_range>(action);
+		}
+
+		#pragma endregion
+
+		#pragma region GetMinimum
+
+		TEST_METHOD(TestQueue_GetMinimum_EmptyQueue_ThrowsError)
+		{
+			auto action = [] {
+				int size = 1;
+				float* minimumDistances = new float[size] { 1 };
+				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+				queue.RemoveMinimum();
+				Assert::AreEqual(0, queue.GetCurrentSize());
+
+				int index;
+				float minimumDistance;
+				queue.GetMinimum(&index, &minimumDistance);
+
+			};
+
+			Assert::ExpectException<std::out_of_range>(action);
+		}
+
+		#pragma endregion
+
+		#pragma region UpdateMinimum
+
+		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToLessThanChildren_KeepsSameMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size]{ 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			queue.UpdateMinimum(1.5f);
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(1.5f, currentMinimum);
+			Assert::AreEqual(6, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToGreaterThanSecondMinimum_GetsUpdatedMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+			queue.UpdateMinimum(2.5f);
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(2.0f, currentMinimum);
+			Assert::AreEqual(7, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue));
+		}
+
+		TEST_METHOD(TestQueue_UpdateMinimum_EmptyQueue_ThrowsError)
+		{
+			auto action = [] {
+
+				int size = 1;
+				float* minimumDistances = new float[size] { 1 };
+				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+
+				queue.RemoveMinimum();
+				Assert::AreEqual(0, queue.GetCurrentSize());
+
+				queue.UpdateMinimum(0.25);
+
+			};
+
+			Assert::ExpectException<std::out_of_range>(action);
+		}
+
+		#pragma endregion
+
+		#pragma region Replace Element
+
+		TEST_METHOD(TestQueue_ReplaceElement_ReplaceNonMinimalElementWithValueBiggerThanMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+
+			//Act
+			queue.ReplaceElement(2, 9, 37.0f);
+
+			//Assert
+			Assert::AreEqual(37.0f, queue.GetMinimumDistances()[9]);
+			Assert::AreEqual(8, queue.GetCurrentSize());
+
+			bool containsNewElement = false;
+			bool containsOldElement = false;
+			int* indices = queue.GetIndices();
+			for (int i = 0; i < 9; i++)
+			{
+				if (indices[i] == 9)
+				{
+					containsNewElement = true;
+				}
+
+				if (indices[i] == 2)
+				{
+					containsOldElement = true;
+				}
+			}
+
+			Assert::IsTrue(containsNewElement, L"Queue does not contain new element");
+			Assert::IsFalse(containsOldElement, L"Queue wrongly includes the old element");
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(1.0f, currentMinimum);
+			Assert::AreEqual(6, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue), L"Queue is not minimum heap");
+		}
+
+		TEST_METHOD(TestQueue_ReplaceElement_ReplaceNonMinimalElementWithNewMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size-1);
+
+			//Act
+			queue.ReplaceElement(2, 9, 0.0f);
+
+			//Assert
+			Assert::AreEqual(0.0f, queue.GetMinimumDistances()[9]);
+			Assert::AreEqual(8, queue.GetCurrentSize());
+
+			bool containsNewElement = false;
+			bool containsOldElement = false;
+			int* indices = queue.GetIndices();
+			for (int i = 0; i < 9; i++)
+			{
+				if (indices[i] == 9)
+				{
+					containsNewElement = true;
+				}
+
+				if (indices[i] == 2)
+				{
+					containsOldElement = true;
+				}
+			}
+
+			Assert::IsTrue(containsNewElement, L"Queue does not contain new element");
+			Assert::IsFalse(containsOldElement, L"Queue wrongly includes the old element");
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(0.0f, currentMinimum);
+			Assert::AreEqual(9, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue), L"Queue is not minimum heap");
+		}
+
+		TEST_METHOD(TestQueue_ReplaceElement_ReplaceMinimumWithNewMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+
+			//Act
+			queue.ReplaceElement(6, 9, 1.5f);
+
+			//Assert
+			Assert::AreEqual(1.5f, queue.GetMinimumDistances()[9]);
+			Assert::AreEqual(8, queue.GetCurrentSize());
+
+			bool containsNewElement = false;
+			bool containsOldElement = false;
+			int* indices = queue.GetIndices();
+			for (int i = 0; i < 9; i++)
+			{
+				if (indices[i] == 9)
+				{
+					containsNewElement = true;
+				}
+
+				if (indices[i] == 6)
+				{
+					containsOldElement = true;
+				}
+			}
+
+			Assert::IsTrue(containsNewElement, L"Queue does not contain new element");
+			Assert::IsFalse(containsOldElement, L"Queue wrongly includes the old element");
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(1.5f, currentMinimum);
+			Assert::AreEqual(9, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue), L"Queue is not minimum heap");
+		}
+
+		TEST_METHOD(TestQueue_ReplaceElement_ReplaceMinimumSoItIsNoLongerMinimum)
+		{
+			//Arrange
+			int size = 9;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
+			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+
+			//Act
+			queue.ReplaceElement(6, 9, 2.5f);
+
+			//Assert
+			Assert::AreEqual(2.5f, queue.GetMinimumDistances()[9]);
+			Assert::AreEqual(8, queue.GetCurrentSize());
+
+			bool containsNewElement = false;
+			bool containsOldElement = false;
+			int* indices = queue.GetIndices();
+			for (int i = 0; i < 9; i++)
+			{
+				if (indices[i] == 9)
+				{
+					containsNewElement = true;
+				}
+
+				if (indices[i] == 6)
+				{
+					containsOldElement = true;
+				}
+			}
+
+			Assert::IsTrue(containsNewElement, L"Queue does not contain new element");
+			Assert::IsFalse(containsOldElement, L"Queue wrongly includes the old element");
+
+			float currentMinimum;
+			int currentMinimumIndex;
+			queue.GetMinimum(&currentMinimumIndex, &currentMinimum);
+
+			Assert::AreEqual(2.0f, currentMinimum);
+			Assert::AreEqual(7, currentMinimumIndex);
+			Assert::IsTrue(this->IsMinimumHeap(queue), L"Queue is not minimum heap");
 		}
 
 		#pragma endregion

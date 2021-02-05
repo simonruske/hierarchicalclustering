@@ -24,7 +24,6 @@ void PriorityQueue::RemoveMinimum()
     this->indices[0] = this->indices[this->currentSize - 1];
     this->currentSize -= 1;
     this->fixDownwards(0);
-    
 }
 
 void PriorityQueue::GetMinimum(int* index, float* minimum_distance)
@@ -68,6 +67,8 @@ void PriorityQueue::ReplaceElement(int originalLabel, int newLabel, float newMin
     {
         throw std::runtime_error("The original node was not found in the queue");
     }
+
+    this->indices[originalIndex] = newLabel;
 
     int currentIndex = this->fixUpwards(originalIndex);
     if (currentIndex == originalIndex)
@@ -115,7 +116,7 @@ int PriorityQueue::propagateUp(int startingIndex)
         return 0;
     }
 
-    int parentIndex = startingIndex / 2;
+    int parentIndex = (startingIndex + 1) / 2 - 1;
 
     if (this->isStrictlyGreater(parentIndex, startingIndex))
     {
