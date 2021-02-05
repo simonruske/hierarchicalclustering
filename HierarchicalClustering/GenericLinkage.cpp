@@ -35,9 +35,9 @@ void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, i
 
 void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondCluster, float distance)
 {
-	this->linkage[depth] = firstCluster;
-	this->linkage[depth + 1] = secondCluster;
-	this->linkage[depth + 2] = distance;
+	this->linkage[depth * 3 ] = firstCluster;
+	this->linkage[depth * 3  + 1] = secondCluster;
+	this->linkage[depth * 3  + 2] = distance;
 }
 
 void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance)

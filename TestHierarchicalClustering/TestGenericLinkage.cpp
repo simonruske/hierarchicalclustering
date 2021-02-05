@@ -99,7 +99,7 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(2, status.GetSize(4));
 		}
 
-		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_SetLinkage)
+		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_SetLinkage_Example)
 		{
 			//Arrange
 			int numberOfRows = 4;
@@ -117,6 +117,7 @@ namespace TestHierarchicalClustering
 
 			//Act
 			status.SetLinkage(0, 0, 1, 0.0609f);
+			status.SetLinkage(1, 2, 3, 0.6421f);
 
 			//Assert
 			float* linkage = status.GetLinkage();
@@ -125,6 +126,10 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(1.0f   , linkage[1]);
 			Assert::AreEqual(0.0609f, linkage[2]);
 
+
+			Assert::AreEqual(2.0f, linkage[3]);
+			Assert::AreEqual(3.0f, linkage[4]);
+			Assert::AreEqual(0.6421f, linkage[5]);
 		}
 
 		#pragma endregion
