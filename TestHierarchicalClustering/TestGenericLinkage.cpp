@@ -132,6 +132,50 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(0.6421f, linkage[5]);
 		}
 
+		TEST_METHOD(TestGenericLinakge_GenericLinakgeStatus_InsertNewCluster)
+		{
+			//Arrange
+			int numberOfRows = 4;
+			int numberOfColumns = 4;
+
+			float* data = new float[20]
+			{
+				0.25f, 0.74f, 0.36f, 0.45f,
+				0.12f, 0.94f, 0.38f, 0.39f,
+				0.93f, 0.54f, 0.69f, 0.49f,
+				0.39f, 0.96f, 0.39f, 0.20f,
+				0.00f, 0.00f, 0.00f, 0.00f, // for the new centre
+			};
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+
+			//Act
+			status.InsertNewCluster(0, 0, 1, 0.0609f);
+
+			//Assert - linkage
+			float* linkage = status.GetLinkage();
+
+			Assert::AreEqual(0.0f, linkage[0]);
+			Assert::AreEqual(1.0f, linkage[1]);
+			Assert::AreEqual(0.0609f, linkage[2]);
+
+			//Assert - sizes
+			Assert::AreEqual(2, status.GetSize(4));
+
+			//Assert - new centre in this case average of point 0 and 1
+			float* currentData = status.GetData();
+			Assert::IsTrue(std::abs(0.185f - currentData[16]) < this->tolerance); 
+			Assert::IsTrue(std::abs(0.84f - currentData[17]) < this->tolerance);
+			Assert::IsTrue(std::abs(0.37f - currentData[18]) < this->tolerance);
+			Assert::IsTrue(std::abs(0.42f - currentData[19]) < this->tolerance);
+
+			//Assert - labels
+			std::unordered_set<int> labels = status.GetClusterLabels();
+			Assert::AreEqual(1, (int)labels.count(4)); // new label should be created
+			Assert::AreEqual(0, (int)labels.count(0)); // old label should be deleted
+			Assert::AreEqual(0, (int)labels.count(1)); // old label should be deleted
+		}
+
 		#pragma endregion
 
 		#pragma region GetNextClustersToMerge

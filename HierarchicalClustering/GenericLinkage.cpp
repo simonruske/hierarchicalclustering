@@ -43,7 +43,7 @@ void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondClu
 void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance)
 {
 	this->SetLinkage(depth, firstCluster, secondCluster, distance);
-	this->CombineSizes(this->numberOfRows + depth, firstCluster, secondCluster);
+	this->CombineSizes(firstCluster, secondCluster, this->numberOfRows + depth);
 
 	this->newClusterUpdate(
 		this->data,
