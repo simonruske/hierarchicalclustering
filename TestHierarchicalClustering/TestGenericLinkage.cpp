@@ -61,11 +61,11 @@ namespace TestHierarchicalClustering
 			}
 
 			// Queue
-			PriorityQueue queue = status.GetQueue();
+			PriorityQueue *queue = status.GetQueue();
 
 			int index;
 			float distance;
-			queue.GetMinimum(&index, &distance);
+			(*queue).GetMinimum(&index, &distance);
 			Assert::AreEqual(0, index);
 			Assert::IsTrue(std::abs(0.0609f - distance) < this->tolerance);
 
@@ -202,7 +202,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
 
 			// Assert
 			Assert::AreEqual(0, firstCluster);
@@ -234,7 +234,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
 
 			// Assert - should realise that 1 is no longer in the labels and that 2 is the next closest point
 			Assert::AreEqual(0, firstCluster);
@@ -266,7 +266,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
 
 			// Assert - should realise that 2 is no longer in the labels and that 0 compared with 1 is the next closest point
 			Assert::AreEqual(0, firstCluster);
@@ -299,7 +299,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
 
 			// Assert - should realise that 1 and 3 is no longer in the labels and that 0 compared with 2 is the next closest point
 			Assert::AreEqual(0, firstCluster);

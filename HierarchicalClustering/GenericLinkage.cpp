@@ -63,9 +63,9 @@ std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()
 	return this->clusterLabels;
 }
 
-PriorityQueue GenericLinkageStatus::GetQueue()
+PriorityQueue* GenericLinkageStatus::GetQueue()
 {
-	return this->queue;
+	return &this->queue;
 }
 
 float* GenericLinkageStatus::GetData()
@@ -107,7 +107,7 @@ void GenericLinkageStatus::PrintLinkage()
 
 void GetNextClustersToMerge(
 	std::unordered_set<int> clusterIndices,
-	PriorityQueue queue,
+	PriorityQueue *queue,
 	int numberOfColumns,
 	float* data,
 	int* nearestNeightbours,
@@ -115,19 +115,19 @@ void GetNextClustersToMerge(
 	int* secondCluster,
 	float* distance)
 {
-	queue.GetMinimum(firstCluster, distance);
+	(*queue).GetMinimum(firstCluster, distance);
 	*secondCluster = nearestNeightbours[*firstCluster];
 
 	while (clusterIndices.count(*secondCluster) == 0)
 	{
 		
-		UpdateNearestNeighbourOfMinimumPoint(clusterIndices, queue, numberOfColumns, data, nearestNeightbours, *firstCluster);
+		UpdateNearestNeighbourOfMinimumPoint(clusterIndices, *queue, numberOfColumns, data, nearestNeightbours, *firstCluster);
 
-		queue.GetMinimum(firstCluster, distance);
+		(*queue).GetMinimum(firstCluster, distance);
 		*secondCluster = nearestNeightbours[*firstCluster];
 	}
 
-	queue.RemoveMinimum();
+	(*queue).RemoveMinimum();
 }
 
 void UpdateNearestNeighbourOfMinimumPoint(

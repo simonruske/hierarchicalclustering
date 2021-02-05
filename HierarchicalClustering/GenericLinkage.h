@@ -13,7 +13,7 @@ public:
 	void InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance);
 
 	std::unordered_set<int> GetClusterLabels();
-	PriorityQueue GetQueue();
+	PriorityQueue* GetQueue();
 	float* GetMinimumDistances();
 	int* GetNearestNeighbours();
 	float* GetData();
@@ -38,7 +38,7 @@ private:
 
 void GetNextClustersToMerge(
 	std::unordered_set<int> clusterIndices,
-	PriorityQueue queue,
+	PriorityQueue* queue,
 	int numberOfColumns,
 	float* data,
 	int* nearestNeightbours,
