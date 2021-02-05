@@ -25,10 +25,13 @@ void InitialiseNearestNeighbours(
 	float* minimumDistances,
 	float* data)
 {
-	for (int i = 0; i < numberOfRows - 1; i++)
+	for (int i = 0; i < numberOfRows * 2 - 1; i++)
 	{
 		minimumDistances[i] = std::numeric_limits<float>().max();
+	}
 
+	for (int i = 0; i < numberOfRows - 1; i++)
+	{
 		for (int j = i + 1; j < numberOfRows; j++)
 		{
 			float dist = SquaredEuclidean(data, i, j, numberOfColumns);

@@ -16,7 +16,7 @@ GenericLinkageStatus::GenericLinkageStatus(int numberOfRows, int numberOfColumns
 	this->nearestNeighbours = new int[minimumDistanceSizeLength];
 	InitialiseNearestNeighbours(numberOfRows, numberOfColumns, this->nearestNeighbours, this->minimumDistances, this->data);
 
-	this->queue = PriorityQueue(this->minimumDistances, numberOfRows - 1);
+	this->queue = PriorityQueue(this->minimumDistances, numberOfRows);
 
 	int linkageSize = (numberOfRows - 1) * 3;
 	this->linkage = new float[linkageSize];
