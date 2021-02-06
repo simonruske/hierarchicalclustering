@@ -178,3 +178,27 @@ void UpdateNearestNeighbourOfMinimumPoint(
 
 	queue.UpdateMinimum(minimumDistance);
 }
+
+GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns)
+{
+	int firstCluster, secondCluster;
+	float distance;
+
+	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+
+	for (int depth = 0; depth < numberOfRows - 1; depth++)
+	{
+		GetNextClustersToMerge(
+			currentStatus.GetClusterLabels(),
+			currentStatus.GetQueue(),
+			numberOfColumns,
+			currentStatus.GetData(),
+			currentStatus.GetNearestNeighbours(),
+			&firstCluster,
+			&secondCluster,
+			&distance);
+
+		currentStatus.InsertNewCluster(depth, firstCluster, secondCluster, distance);
+	}
+	return currentStatus;
+}

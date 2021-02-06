@@ -54,3 +54,5 @@ void UpdateNearestNeighbourOfMinimumPoint(
 	float* data,
 	int* nearestNeightbours,
 	int clusterIndex);
+
+GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns);
