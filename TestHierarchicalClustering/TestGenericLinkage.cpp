@@ -270,8 +270,8 @@ namespace TestHierarchicalClustering
 			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert - should realise that 2 is no longer in the labels and that 0 compared with 1 is the next closest point
-			Assert::AreEqual(0, firstCluster);
-			Assert::AreEqual(1, secondCluster);
+			Assert::AreEqual(1, firstCluster);
+			Assert::AreEqual(0, secondCluster);
 			Assert::IsTrue(std::abs(distance - 0.0609) < this->tolerance);
 		}
 
@@ -303,8 +303,8 @@ namespace TestHierarchicalClustering
 			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert - should realise that 1 and 3 is no longer in the labels and that 0 compared with 2 is the next closest point
-			Assert::AreEqual(0, firstCluster);
-			Assert::AreEqual(2, secondCluster);
+			Assert::AreEqual(2, firstCluster);
+			Assert::AreEqual(0, secondCluster);
 			Assert::IsTrue(std::abs(distance - 0.0609) < this->tolerance);
 		}
 
@@ -346,10 +346,12 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(std::abs(minimumDistance - 0.0609) < this->tolerance);
 			Assert::AreEqual(1, nearestNeighbours[0]);
 
-			//Act II
+			////Act II
 
 			// remove point 0 from the queue so point 1 is now first in the queue.
 			queue.RemoveMinimum();
+			labels.erase(0);
+
 			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 1, this->defaultMetric);
 
 			//Assert II
@@ -365,6 +367,7 @@ namespace TestHierarchicalClustering
 
 			// remove point 1 from queue so point 2 is now first in queue
 			queue.RemoveMinimum();
+			labels.erase(1);
 			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 2, this->defaultMetric);
 
 			//Assert III
@@ -395,7 +398,7 @@ namespace TestHierarchicalClustering
 
 	private:
 
-		float tolerance = 1e-7f;
+		float tolerance = 1e-6f;
 		std::function<float(float*, int, int, int)> defaultMetric = SquaredEuclidean;
 
 		void runGenericLinkageOnTestFile(char* inputFilename, char* linkageFilename)

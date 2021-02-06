@@ -169,7 +169,7 @@ void UpdateNearestNeighbourOfMinimumPoint(
 
 	for (setIterator = clusterIndices.begin(); setIterator != clusterIndices.end(); setIterator++)
 	{
-		if (*setIterator <= clusterIndex)
+		if (*setIterator == clusterIndex)
 		{
 			continue;
 		}
