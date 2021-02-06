@@ -6,7 +6,11 @@
 class GenericLinkageStatus
 {
 public:
-	GenericLinkageStatus(int numberOfRows, int numberOfColumns, float* data);
+	GenericLinkageStatus(
+		int numberOfRows, 
+		int numberOfColumns, 
+		float* data,
+		std::function<float(float*, int, int, int)> metric);
 
 	void CombineSizes(int firstLocation, int secondLocation, int newLocation);
 	void SetLinkage(int depth, int firstCluster, int secondCluster, float distance);
@@ -35,6 +39,7 @@ private:
 	int numberOfColumns;
 
 	std::function<void(float*, int*, int, int, int, int)> newClusterUpdate;
+	std::function<float(float*, int, int, int)> metric;
 };
 
 void GetNextClustersToMerge(
@@ -45,7 +50,8 @@ void GetNextClustersToMerge(
 	int* nearestNeightbours,
 	int* firstCluster,
 	int* secondCluster,
-	float* distance);
+	float* distance,
+	std::function<float(float*, int, int, int)> metric);
 
 void UpdateNearestNeighbourOfMinimumPoint(
 	std::unordered_set<int> clusterIndices,
@@ -53,6 +59,7 @@ void UpdateNearestNeighbourOfMinimumPoint(
 	int numberOfColumns,
 	float* data,
 	int* nearestNeightbours,
-	int clusterIndex);
+	int clusterIndex,
+	std::function<float(float*, int, int, int)> metric);
 
-GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns);
+GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns, std::function<float(float*, int, int, int)> metric);

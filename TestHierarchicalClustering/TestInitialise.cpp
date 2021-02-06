@@ -71,7 +71,7 @@ namespace TestHierarchicalClustering
 			int* nearestNeighbours = new int[3];
 			float* minimumDistances = new float[3];
 
-			InitialiseNearestNeighbours(numberOfRows, numberOfColumns, nearestNeighbours, minimumDistances, data);
+			InitialiseNearestNeighbours(numberOfRows, numberOfColumns, nearestNeighbours, minimumDistances, data, SquaredEuclidean);
 
 			// Assert - compare with the minimum entries in the result from scipy.spatial.distance.pdist
 			int* expectedNearestNeighbours  = new int[3]   {       1,       3,       3 };

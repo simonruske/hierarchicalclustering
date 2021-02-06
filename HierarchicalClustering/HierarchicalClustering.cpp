@@ -9,6 +9,7 @@
 #include "Queue.h"
 #include "Initialise.h"
 #include "Read.h"
+#include "Distance.h"
 
 int main()
 {
@@ -30,6 +31,6 @@ int main()
         return 0;
     }
 
-    GenericLinkageStatus status = GenericLinkage(vec, m, n);
+    GenericLinkageStatus status = GenericLinkage(vec, m, n, Euclidean);
     status.PrintLinkage();
 }

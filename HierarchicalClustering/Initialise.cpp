@@ -1,6 +1,7 @@
 #include "Initialise.h"
 #include "Distance.h"
 #include <limits>
+#include <functional>
 
 void InitialiseClusterLabels(std::unordered_set<int> *clusterLabels, int numberOfLabels)
 {
@@ -23,7 +24,8 @@ void InitialiseNearestNeighbours(
 	int numberOfColumns,
 	int* nearestNeighbours,
 	float* minimumDistances,
-	float* data)
+	float* data,
+	std::function<float(float*, int, int, int)> metric)
 {
 	for (int i = 0; i < numberOfRows * 2 - 1; i++)
 	{
@@ -34,7 +36,7 @@ void InitialiseNearestNeighbours(
 	{
 		for (int j = i + 1; j < numberOfRows; j++)
 		{
-			float dist = SquaredEuclidean(data, i, j, numberOfColumns);
+			float dist = metric(data, i, j, numberOfColumns);
 
 			if (dist < minimumDistances[i])
 			{

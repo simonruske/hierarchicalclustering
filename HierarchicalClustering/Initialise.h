@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_set>
+#include <functional>
 
 void InitialiseClusterLabels(std::unordered_set<int>* clusterLabels, int numberOfLabels);
 
@@ -10,4 +11,5 @@ void InitialiseNearestNeighbours(
 	int numberOfColumns,
 	int* nearestNeighbours,
 	float* minimumDistances,
-	float* data);
+	float* data,
+	std::function<float(float*, int, int, int)> metric);

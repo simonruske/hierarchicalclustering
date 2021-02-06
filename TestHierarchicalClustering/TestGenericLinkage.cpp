@@ -27,7 +27,7 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, this->defaultMetric);
 
 			// Labels
 			std::unordered_set<int> labels = status.GetClusterLabels();
@@ -91,7 +91,7 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, this->defaultMetric);
 
 			//Act
 			status.CombineSizes(0, 1, 4);
@@ -114,7 +114,7 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, this->defaultMetric);
 
 			//Act
 			status.SetLinkage(0, 0, 1, 0.0609f);
@@ -148,7 +148,7 @@ namespace TestHierarchicalClustering
 				0.00f, 0.00f, 0.00f, 0.00f, // for the new centre
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, this->defaultMetric);
 
 			//Act
 			status.InsertNewCluster(0, 0, 1, 0.0609f);
@@ -203,7 +203,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert
 			Assert::AreEqual(0, firstCluster);
@@ -235,7 +235,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert - should realise that 1 is no longer in the labels and that 2 is the next closest point
 			Assert::AreEqual(0, firstCluster);
@@ -267,7 +267,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert - should realise that 2 is no longer in the labels and that 0 compared with 1 is the next closest point
 			Assert::AreEqual(0, firstCluster);
@@ -300,7 +300,7 @@ namespace TestHierarchicalClustering
 			float distance;
 
 			// Act
-			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance);
+			GetNextClustersToMerge(labels, &queue, 4, data, nearestNeighbours, &firstCluster, &secondCluster, &distance, this->defaultMetric);
 
 			// Assert - should realise that 1 and 3 is no longer in the labels and that 0 compared with 2 is the next closest point
 			Assert::AreEqual(0, firstCluster);
@@ -333,7 +333,7 @@ namespace TestHierarchicalClustering
 			int* nearestNeighbours = new int[3]{ 3, 2, 1 };
 
 			//Act I
-			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 0);
+			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 0, this->defaultMetric);
 
 			//Assert I
 			int index;
@@ -350,7 +350,7 @@ namespace TestHierarchicalClustering
 
 			// remove point 0 from the queue so point 1 is now first in the queue.
 			queue.RemoveMinimum();
-			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 1);
+			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 1, this->defaultMetric);
 
 			//Assert II
 			queue.GetMinimum(&index, &minimumDistance);
@@ -365,7 +365,7 @@ namespace TestHierarchicalClustering
 
 			// remove point 1 from queue so point 2 is now first in queue
 			queue.RemoveMinimum();
-			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 2);
+			UpdateNearestNeighbourOfMinimumPoint(labels, queue, 4, data, nearestNeighbours, 2, this->defaultMetric);
 
 			//Assert III
 			queue.GetMinimum(&index, &minimumDistance);
@@ -396,6 +396,7 @@ namespace TestHierarchicalClustering
 	private:
 
 		float tolerance = 1e-7f;
+		std::function<float(float*, int, int, int)> defaultMetric = SquaredEuclidean;
 
 		void runGenericLinkageOnTestFile(char* inputFilename, char* linkageFilename)
 		{
@@ -408,7 +409,7 @@ namespace TestHierarchicalClustering
 			Assert::IsTrue(TryGetArrayFromFile(inputFilename, m, n, vec), L"Could not read in the array from the file");
 
 			//Act
-			GenericLinkageStatus status = GenericLinkage(vec, m, n);
+			GenericLinkageStatus status = GenericLinkage(vec, m, n, Euclidean);
 
 
 			//Assert
