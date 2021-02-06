@@ -56,6 +56,7 @@ void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int sec
 	this->clusterLabels.erase(firstCluster);
 	this->clusterLabels.erase(secondCluster);
 	this->clusterLabels.insert(this->numberOfRows + depth);
+	this->queue.ReplaceElement(secondCluster, newCluster);
 }
 
 std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()

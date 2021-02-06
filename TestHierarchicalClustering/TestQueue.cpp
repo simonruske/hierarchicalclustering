@@ -290,7 +290,8 @@ namespace TestHierarchicalClustering
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
-			queue.ReplaceElement(2, 9, 37.0f);
+			minimumDistances[9] = 37.0f;
+			queue.ReplaceElement(2, 9);
 
 			//Assert
 			Assert::AreEqual(37.0f, queue.GetMinimumDistances()[9]);
@@ -332,7 +333,8 @@ namespace TestHierarchicalClustering
 			PriorityQueue queue = PriorityQueue(minimumDistances, size-1);
 
 			//Act
-			queue.ReplaceElement(2, 9, 0.0f);
+			minimumDistances[9] = 0.0f;
+			queue.ReplaceElement(2, 9);
 
 			//Assert
 			Assert::AreEqual(0.0f, queue.GetMinimumDistances()[9]);
@@ -374,7 +376,8 @@ namespace TestHierarchicalClustering
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
-			queue.ReplaceElement(6, 9, 1.5f);
+			minimumDistances[9] = 1.5f;
+			queue.ReplaceElement(6, 9);
 
 			//Assert
 			Assert::AreEqual(1.5f, queue.GetMinimumDistances()[9]);
@@ -416,7 +419,8 @@ namespace TestHierarchicalClustering
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
-			queue.ReplaceElement(6, 9, 2.5f);
+			minimumDistances[9] = 2.5f;
+			queue.ReplaceElement(6, 9);
 
 			//Assert
 			Assert::AreEqual(2.5f, queue.GetMinimumDistances()[9]);

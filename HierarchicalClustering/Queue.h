@@ -9,7 +9,7 @@ public:
     void GetMinimum(int* index, float* minimum_distance);
     void UpdateMinimum(float distance);
     void RemoveMinimum();
-    void ReplaceElement(int originalLabel, int newLabel, float newMinimumDistance);
+    void ReplaceElement(int originalLabel, int newLabel);
     
     int* GetIndices();
     float* GetMinimumDistances();

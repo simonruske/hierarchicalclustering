@@ -51,10 +51,8 @@ void PriorityQueue::UpdateMinimum(float distance)
     this->fixDownwards(0);
 }
 
-void PriorityQueue::ReplaceElement(int originalLabel, int newLabel, float newMinimumDistance)
+void PriorityQueue::ReplaceElement(int originalLabel, int newLabel)
 {
-    this->minimumDistances[newLabel] = newMinimumDistance;
-
     bool found = false;
     int originalIndex;
     for (originalIndex = 0; originalIndex < this->currentSize; originalIndex++)
