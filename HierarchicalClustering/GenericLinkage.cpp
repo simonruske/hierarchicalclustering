@@ -42,8 +42,9 @@ void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondClu
 
 void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance)
 {
+	int newCluster = this->numberOfRows + depth;
 	this->SetLinkage(depth, firstCluster, secondCluster, distance);
-	this->CombineSizes(firstCluster, secondCluster, this->numberOfRows + depth);
+	this->CombineSizes(firstCluster, secondCluster, newCluster);
 
 	this->newClusterUpdate(
 		this->data,
@@ -55,8 +56,25 @@ void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int sec
 
 	this->clusterLabels.erase(firstCluster);
 	this->clusterLabels.erase(secondCluster);
-	this->clusterLabels.insert(this->numberOfRows + depth);
+
+	this->UpdateNearestNeighbours(newCluster);
+
+	this->clusterLabels.insert(newCluster);
+
 	this->queue.ReplaceElement(secondCluster, newCluster);
+}
+
+void GenericLinkageStatus::UpdateNearestNeighbours(int newCluster)
+{
+	for (auto it = this->clusterLabels.begin(); it != this->clusterLabels.end(); ++it)
+	{
+		float currentDistance = SquaredEuclidean(data, newCluster, *it, this->numberOfColumns);
+		if (currentDistance < this->minimumDistances[newCluster])
+		{
+			this->minimumDistances[newCluster] = currentDistance;
+			this->nearestNeighbours[newCluster] = *it;
+		}
+	}
 }
 
 std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()

@@ -11,6 +11,7 @@ public:
 	void CombineSizes(int firstLocation, int secondLocation, int newLocation);
 	void SetLinkage(int depth, int firstCluster, int secondCluster, float distance);
 	void InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance);
+	void UpdateNearestNeighbours(int newCluster);
 
 	std::unordered_set<int> GetClusterLabels();
 	PriorityQueue* GetQueue();
