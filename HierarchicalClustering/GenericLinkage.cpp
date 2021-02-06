@@ -40,8 +40,8 @@ void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, i
 
 void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondCluster, float distance)
 {
-	this->linkage[depth * 3 ] = firstCluster;
-	this->linkage[depth * 3  + 1] = secondCluster;
+	this->linkage[depth * 3 ] = std::min(firstCluster, secondCluster);
+	this->linkage[depth * 3  + 1] = std::max(firstCluster, secondCluster);
 	this->linkage[depth * 3  + 2] = distance;
 }
 
