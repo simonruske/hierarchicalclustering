@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include "../HierarchicalClustering/GenericLinkage.h"
 #include "../HierarchicalClustering/GenericLinkage.cpp"
+#include "../HierarchicalClustering/Read.h";
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -379,8 +380,61 @@ namespace TestHierarchicalClustering
 
 		#pragma endregion
 
+		#pragma region GenericLinkage
+		TEST_METHOD(TestGenericLinkage_GenericLinkage_Example_Rows10)
+		{
+			runGenericLinkageOnTestFile("..//..//TestFiles//data_10.csv", "..//..//TestFiles//linkage_10.csv");
+		}
+
+		TEST_METHOD(TestGenericLinkage_GenericLinkage_Example_Rows1000)
+		{
+			runGenericLinkageOnTestFile("..//..//TestFiles//data_1000.csv", "..//..//TestFiles//linkage_1000.csv");
+		}
+
+		#pragma endregion
+
 	private:
 
 		float tolerance = 1e-7f;
+
+		void runGenericLinkageOnTestFile(char* inputFilename, char* linkageFilename)
+		{
+			int m, n;
+			
+			Assert::IsTrue(TryGetArraySize(inputFilename, &m, &n), L"Could not determine the array size from the input file");
+
+			int vecSize = m * (2 * n + 1);
+			float* vec = new float[vecSize];
+			Assert::IsTrue(TryGetArrayFromFile(inputFilename, m, n, vec), L"Could not read in the array from the file");
+
+			//Act
+			GenericLinkageStatus status = GenericLinkage(vec, m, n);
+
+
+			//Assert
+			int linkageNumberOfRows;
+			int linkageNumberOfColumns;
+			Assert::IsTrue(TryGetArraySize(linkageFilename, &linkageNumberOfRows, &linkageNumberOfColumns), L"Could not determine the array size for the linkage");
+			Assert::AreEqual(m - 1, linkageNumberOfRows);
+			Assert::AreEqual(4, linkageNumberOfColumns);
+
+			int expectedLinkageSize = (m - 1) * 4;
+			float* expectedLinkage = new float[expectedLinkageSize];
+			Assert::IsTrue(TryGetArrayFromFile(linkageFilename, linkageNumberOfRows, linkageNumberOfColumns, expectedLinkage));
+
+			float* actualLinkage = status.GetLinkage();
+
+			wchar_t buffer[100];
+			for (int i = 0; i < linkageNumberOfRows; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					int expectedIndex = i * 4 + j;
+					int actualIndex = i * 3 + j;
+					swprintf(buffer, 100, L"Linkage element %d,%d did not match: expected %f but got %f", i, j, expectedLinkage[expectedIndex], actualLinkage[actualIndex]);
+					Assert::IsTrue(std::abs(expectedLinkage[expectedIndex] - actualLinkage[actualIndex]) < this->tolerance, buffer);
+				}
+			}
+		}
 	};
 }
