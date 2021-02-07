@@ -31,6 +31,6 @@ int main()
         return 0;
     }
 
-    GenericLinkageStatus status = GenericLinkage(vec, m, n, Euclidean);
+    GenericLinkageStatus status = GenericLinkage(vec, m, n);
     status.PrintLinkage();
 }

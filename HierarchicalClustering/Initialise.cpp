@@ -24,9 +24,12 @@ void InitialiseNearestNeighbours(
 	int numberOfColumns,
 	int* nearestNeighbours,
 	float* minimumDistances,
-	float* data,
-	std::function<float(float*, int, int, int)> metric)
+	float* data)
 {
+	float minimumDistance;
+	float currentDistance;
+	int nearestNeighbour;
+
 	for (int i = 0; i < numberOfRows * 2 - 1; i++)
 	{
 		minimumDistances[i] = std::numeric_limits<float>().max();
@@ -34,15 +37,19 @@ void InitialiseNearestNeighbours(
 
 	for (int i = 0; i < numberOfRows - 1; i++)
 	{
+		minimumDistance = std::numeric_limits<float>().max();
+		nearestNeighbour = 0;
 		for (int j = i + 1; j < numberOfRows; j++)
 		{
-			float dist = metric(data, i, j, numberOfColumns);
+			currentDistance = SquaredEuclidean(data, i, j, numberOfColumns);
 
-			if (dist < minimumDistances[i])
+			if (currentDistance < minimumDistance)
 			{
-				minimumDistances[i] = dist;
-				nearestNeighbours[i] = j;
+				minimumDistance = currentDistance;
+				nearestNeighbour = j;
 			}
 		}
+		minimumDistances[i] = std::sqrt(minimumDistance);
+		nearestNeighbours[i] = nearestNeighbour;
 	}
 }

@@ -11,5 +11,4 @@ void InitialiseNearestNeighbours(
 	int numberOfColumns,
 	int* nearestNeighbours,
 	float* minimumDistances,
-	float* data,
-	std::function<float(float*, int, int, int)> metric);
+	float* data);

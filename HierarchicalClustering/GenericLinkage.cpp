@@ -6,20 +6,18 @@
 GenericLinkageStatus::GenericLinkageStatus(
 	int numberOfRows,
 	int numberOfColumns,
-	float* data,
-	std::function<float(float*, int, int, int)> metric) : queue(new float[0]{}, 0)
+	float* data) : queue(new float[0]{}, 0)
 {
 	this->numberOfRows = numberOfRows;
 	this->numberOfColumns = numberOfColumns;
 	this->data = data;
-	this->metric = metric;
 
 	InitialiseClusterLabels(&this->clusterLabels, numberOfRows);
 
 	int minimumDistanceSizeLength = 2 * numberOfRows - 1;
 	this->minimumDistances = new float[minimumDistanceSizeLength];
 	this->nearestNeighbours = new int[minimumDistanceSizeLength];
-	InitialiseNearestNeighbours(numberOfRows, numberOfColumns, this->nearestNeighbours, this->minimumDistances, this->data, this->metric);
+	InitialiseNearestNeighbours(numberOfRows, numberOfColumns, this->nearestNeighbours, this->minimumDistances, this->data);
 
 	this->queue = PriorityQueue(this->minimumDistances, numberOfRows);
 
@@ -71,20 +69,41 @@ void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int sec
 
 void GenericLinkageStatus::UpdateNearestNeighbours(int newCluster)
 {
+	float minimumDistance = this->minimumDistances[newCluster];
+	int nearestNeighbour = 0;
 	for (auto it = this->clusterLabels.begin(); it != this->clusterLabels.end(); ++it)
 	{
-		float currentDistance = this->metric(data, newCluster, *it, this->numberOfColumns);
-		if (currentDistance < this->minimumDistances[newCluster])
+		float currentDistance = SquaredEuclidean(data, newCluster, *it, this->numberOfColumns);
+		if (currentDistance < minimumDistance)
 		{
-			this->minimumDistances[newCluster] = currentDistance;
-			this->nearestNeighbours[newCluster] = *it;
+			minimumDistance = currentDistance;
+			nearestNeighbour = *it;
 		}
 	}
+	this->minimumDistances[newCluster] = std::sqrt(minimumDistance);
+	this->nearestNeighbours[newCluster] = nearestNeighbour;
 }
 
-std::unordered_set<int> GenericLinkageStatus::GetClusterLabels()
+void GenericLinkageStatus::GetNextClustersToMerge(int* firstCluster, int* secondCluster, float* distance)
 {
-	return this->clusterLabels;
+	this->queue.GetMinimum(firstCluster, distance);
+	*secondCluster = this->nearestNeighbours[*firstCluster];
+
+	while (this->clusterLabels.count(*secondCluster) == 0)
+	{
+
+		UpdateNearestNeighbourOfMinimumPoint(*firstCluster);
+
+		this->queue.GetMinimum(firstCluster, distance);
+		*secondCluster = nearestNeighbours[*firstCluster];
+	}
+
+	this->queue.RemoveMinimum();
+}
+
+std::unordered_set<int>* GenericLinkageStatus::GetClusterLabels()
+{
+	return &this->clusterLabels;
 }
 
 PriorityQueue* GenericLinkageStatus::GetQueue()
@@ -129,84 +148,42 @@ void GenericLinkageStatus::PrintLinkage()
 	}
 }
 
-void GetNextClustersToMerge(
-	std::unordered_set<int> clusterIndices,
-	PriorityQueue *queue,
-	int numberOfColumns,
-	float* data,
-	int* nearestNeightbours,
-	int* firstCluster,
-	int* secondCluster,
-	float* distance,
-	std::function<float(float*, int, int, int)> metric)
-{
-	(*queue).GetMinimum(firstCluster, distance);
-	*secondCluster = nearestNeightbours[*firstCluster];
-
-	while (clusterIndices.count(*secondCluster) == 0)
-	{
-		
-		UpdateNearestNeighbourOfMinimumPoint(clusterIndices, *queue, numberOfColumns, data, nearestNeightbours, *firstCluster, metric);
-
-		(*queue).GetMinimum(firstCluster, distance);
-		*secondCluster = nearestNeightbours[*firstCluster];
-	}
-
-	(*queue).RemoveMinimum();
-}
-
-void UpdateNearestNeighbourOfMinimumPoint(
-	std::unordered_set<int> clusterIndices,
-	PriorityQueue queue,
-	int numberOfColumns,
-	float* data,
-	int* nearestNeightbours,
-	int clusterIndex,
-	std::function<float(float*, int, int, int)> metric)
+void GenericLinkageStatus::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex)
 {
 	float minimumDistance = std::numeric_limits<float>::max();
 	std::unordered_set<int>::iterator setIterator;
 
-	for (setIterator = clusterIndices.begin(); setIterator != clusterIndices.end(); setIterator++)
+	for (setIterator = this->clusterLabels.begin(); setIterator != this->clusterLabels.end(); setIterator++)
 	{
 		if (*setIterator == clusterIndex)
 		{
 			continue;
 		}
 
-		float current_distance = metric(data, clusterIndex, *setIterator, numberOfColumns);
+		float current_distance = SquaredEuclidean(data, clusterIndex, *setIterator, numberOfColumns);
 
 		if (current_distance < minimumDistance)
 		{
 			minimumDistance = current_distance;
-			nearestNeightbours[clusterIndex] = *setIterator;
+			this->nearestNeighbours[clusterIndex] = *setIterator;
 		}
 	}
 
-	queue.UpdateMinimum(minimumDistance);
+	this->queue.UpdateMinimum(std::sqrt(minimumDistance));
 }
 
-GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns, std::function<float(float*, int, int, int)> metric)
+GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns)
 {
 	int firstCluster, secondCluster;
 	float distance;
 
-	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data, metric);
+	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
 
 	for (int depth = 0; depth < numberOfRows - 1; depth++)
 	{
-		GetNextClustersToMerge(
-			currentStatus.GetClusterLabels(),
-			currentStatus.GetQueue(),
-			numberOfColumns,
-			currentStatus.GetData(),
-			currentStatus.GetNearestNeighbours(),
-			&firstCluster,
-			&secondCluster,
-			&distance,
-			metric);
-
+		currentStatus.GetNextClustersToMerge(&firstCluster, &secondCluster, &distance);
 		currentStatus.InsertNewCluster(depth, firstCluster, secondCluster, distance);
 	}
+
 	return currentStatus;
 }
