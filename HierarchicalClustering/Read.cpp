@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-bool TryGetArraySize(char* filename, int* numberOfRows, int* numberOfColumns)
+bool TryGetArraySize(std::string filename, int* numberOfRows, int* numberOfColumns)
 {
     std::ifstream inputFile(filename);
 
@@ -51,7 +51,7 @@ bool TryGetArraySize(std::ifstream *stream, int* numberOfRows, int* numberOfColu
     return true;
 }
 
-bool TryGetArrayFromFile(char* filename, int numberOfRows, int numberOfColumns, float* arr)
+bool TryGetArrayFromFile(std::string filename, int numberOfRows, int numberOfColumns, float* arr)
 {
     std::ifstream inputFile(filename);
 
