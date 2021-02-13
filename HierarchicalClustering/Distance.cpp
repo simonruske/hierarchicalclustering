@@ -1,9 +1,9 @@
 #include "Distance.h"
-#include "math.h";
+#include "math.h"
 
 float Euclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns)
 {
-	return sqrt(SquaredEuclidean(data, firstIndex, secondIndex, numberOfColumns));
+	return sqrtf(SquaredEuclidean(data, firstIndex, secondIndex, numberOfColumns));
 }
 
 float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns)

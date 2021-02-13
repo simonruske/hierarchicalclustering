@@ -9,7 +9,9 @@ public:
 	GenericLinkageStatus(
 		int numberOfRows, 
 		int numberOfColumns, 
-		float* data);
+		float* data,
+		float* linkage);
+	~GenericLinkageStatus();
 
 	void CombineSizes(int firstLocation, int secondLocation, int newLocation);
 	void SetLinkage(int depth, int firstCluster, int secondCluster, float distance);
@@ -26,7 +28,6 @@ public:
 	float* GetData();
 	float* GetLinkage();
 	int GetSize(int clusterIndex);
-
 	void PrintLinkage();
 
 private:
@@ -43,4 +44,4 @@ private:
 	std::function<void(float*, int*, int, int, int, int)> newClusterUpdate;
 };
 
-GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns);
+void GenericLinkage(float* data, float* linkage, int numberOfRows, int numberOfColumns);

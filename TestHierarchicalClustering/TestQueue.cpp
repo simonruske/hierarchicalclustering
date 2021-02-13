@@ -29,6 +29,8 @@ namespace TestHierarchicalClustering
 
 			Assert::AreEqual(2, queue.GetCurrentSize());
 			Assert::AreEqual(2, queue.GetCapacity());
+
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_TwoNodesInOrder_CreatesMinHeap)
@@ -38,6 +40,7 @@ namespace TestHierarchicalClustering
 			float* minimumDistances = new float[2]{ 0.35f, 0.45f };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_TwoNodesOutOfOrder_CreatesMinHeap)
@@ -47,6 +50,7 @@ namespace TestHierarchicalClustering
 			float* minimumDistances = new float[2]{ 0.45f, 0.35f };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_ThreeNodesAlreadyCorrect_CreatesMinHeap)
@@ -56,6 +60,7 @@ namespace TestHierarchicalClustering
 			float* minimumDistances = new float[3]{ 0.35f, 0.45f, 0.55f };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_ThreeNodes_ChildrenOutOfOrder_CreatesMinHeap)
@@ -65,6 +70,7 @@ namespace TestHierarchicalClustering
 			float* minimumDistances = new float[3]{ 0.35f, 0.55f, 0.45f };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_RandomDistances_CreatesMinHeap)
@@ -85,6 +91,8 @@ namespace TestHierarchicalClustering
 				PriorityQueue queue = PriorityQueue(minimumDistances, size);
 
 				Assert::IsTrue(this->IsMinimumHeap(queue));
+
+				delete[] minimumDistances;
 			}
 		}
 
@@ -103,6 +111,7 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(1.0f, originalMinimum);
 			Assert::AreEqual(6, originalMinimumIndex);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_Constructor_Empty_CreatesEmptyHeap)
@@ -113,6 +122,7 @@ namespace TestHierarchicalClustering
 
 			Assert::AreEqual(0, queue.GetCapacity());
 			Assert::AreEqual(0, queue.GetCurrentSize());
+			delete[] minimumDistances;
 		}
 
 		#pragma endregion
@@ -178,6 +188,7 @@ namespace TestHierarchicalClustering
 
 			queue.RemoveMinimum();
 			Assert::AreEqual(0, queue.GetCurrentSize());
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_RemoveMinimum_EmptyQueue_ThrowsError)
@@ -191,7 +202,7 @@ namespace TestHierarchicalClustering
 				Assert::AreEqual(0, queue.GetCurrentSize());
 
 				queue.RemoveMinimum();
-
+				delete[] minimumDistances;
 			};
 
 			Assert::ExpectException<std::out_of_range>(action);
@@ -214,6 +225,7 @@ namespace TestHierarchicalClustering
 				int index;
 				float minimumDistance;
 				queue.GetMinimum(&index, &minimumDistance);
+				delete[] minimumDistances;
 
 			};
 
@@ -240,6 +252,7 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(1.5f, currentMinimum);
 			Assert::AreEqual(6, currentMinimumIndex);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_UpdateMinimum_UpdatedToGreaterThanSecondMinimum_GetsUpdatedMinimum)
@@ -258,6 +271,7 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(2.0f, currentMinimum);
 			Assert::AreEqual(7, currentMinimumIndex);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
+			delete[] minimumDistances;
 		}
 
 		TEST_METHOD(TestQueue_UpdateMinimum_EmptyQueue_ThrowsError)
@@ -272,6 +286,7 @@ namespace TestHierarchicalClustering
 				Assert::AreEqual(0, queue.GetCurrentSize());
 
 				queue.UpdateMinimum(0.25);
+				delete[] minimumDistances;
 
 			};
 
@@ -285,8 +300,8 @@ namespace TestHierarchicalClustering
 		TEST_METHOD(TestQueue_ReplaceElement_ReplaceNonMinimalElementWithValueBiggerThanMinimum)
 		{
 			//Arrange
-			int size = 9;
-			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
+			int size = 10;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1, -1 };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
@@ -295,7 +310,7 @@ namespace TestHierarchicalClustering
 
 			//Assert
 			Assert::AreEqual(37.0f, queue.GetMinimumDistances()[9]);
-			Assert::AreEqual(8, queue.GetCurrentSize());
+			Assert::AreEqual(9, queue.GetCurrentSize());
 
 			bool containsNewElement = false;
 			bool containsOldElement = false;
@@ -328,9 +343,9 @@ namespace TestHierarchicalClustering
 		TEST_METHOD(TestQueue_ReplaceElement_ReplaceNonMinimalElementWithNewMinimum)
 		{
 			//Arrange
-			int size = 9;
-			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size-1);
+			int size = 10;
+			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, std::numeric_limits<float>().max()};
+			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
 			minimumDistances[9] = 0.0f;
@@ -338,7 +353,7 @@ namespace TestHierarchicalClustering
 
 			//Assert
 			Assert::AreEqual(0.0f, queue.GetMinimumDistances()[9]);
-			Assert::AreEqual(8, queue.GetCurrentSize());
+			Assert::AreEqual(9, queue.GetCurrentSize());
 
 			bool containsNewElement = false;
 			bool containsOldElement = false;
@@ -371,7 +386,7 @@ namespace TestHierarchicalClustering
 		TEST_METHOD(TestQueue_ReplaceElement_ReplaceMinimumWithNewMinimum)
 		{
 			//Arrange
-			int size = 9;
+			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
@@ -381,7 +396,7 @@ namespace TestHierarchicalClustering
 
 			//Assert
 			Assert::AreEqual(1.5f, queue.GetMinimumDistances()[9]);
-			Assert::AreEqual(8, queue.GetCurrentSize());
+			Assert::AreEqual(9, queue.GetCurrentSize());
 
 			bool containsNewElement = false;
 			bool containsOldElement = false;
@@ -414,17 +429,17 @@ namespace TestHierarchicalClustering
 		TEST_METHOD(TestQueue_ReplaceElement_ReplaceMinimumSoItIsNoLongerMinimum)
 		{
 			//Arrange
-			int size = 9;
+			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
 			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
 
 			//Act
-			minimumDistances[9] = 2.5f;
+			minimumDistances[9] = 2.5;
 			queue.ReplaceElement(6, 9);
 
 			//Assert
 			Assert::AreEqual(2.5f, queue.GetMinimumDistances()[9]);
-			Assert::AreEqual(8, queue.GetCurrentSize());
+			Assert::AreEqual(9, queue.GetCurrentSize());
 
 			bool containsNewElement = false;
 			bool containsOldElement = false;

@@ -2,7 +2,6 @@
 #include "CppUnitTest.h"
 #include "../HierarchicalClustering/Read.h"
 #include "../HierarchicalClustering/Read.cpp"
-#include <tchar.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace TestHierarchicalClustering
@@ -13,7 +12,9 @@ namespace TestHierarchicalClustering
 
 		TEST_METHOD(TestRead_ReadFile_ExampleFile)
 		{
-			char* filename = "..\\..\\TestFiles\\data.csv";
+
+			std::string filename = SOLUTION_DIRECTORY"TestFiles\\data.csv";
+
 			int numberOfRows;
 			int numberOfColumns;
 
@@ -30,6 +31,7 @@ namespace TestHierarchicalClustering
 		}
 
 	private:
+	
 		char* PrintFullPath(char* partialPath)
 		{
 			char full[_MAX_PATH];

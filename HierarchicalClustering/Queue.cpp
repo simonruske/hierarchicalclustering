@@ -158,7 +158,7 @@ int PriorityQueue::propagateDown(int startingIndex)
 
 int PriorityQueue::fixDownwards(int index)
 {
-    int previous_index;
+    int previous_index = index;
     int current_index = index;
     do
     {
@@ -170,7 +170,7 @@ int PriorityQueue::fixDownwards(int index)
 
 int PriorityQueue::fixUpwards(int index)
 {
-    int previous_index;
+    int previous_index = index;
     int current_index = index;
     do
     {

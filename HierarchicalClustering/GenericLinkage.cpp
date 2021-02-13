@@ -6,7 +6,8 @@
 GenericLinkageStatus::GenericLinkageStatus(
 	int numberOfRows,
 	int numberOfColumns,
-	float* data) : queue(new float[0]{}, 0)
+	float* data,
+	float* linkage) : queue(NULL, 0)
 {
 	this->numberOfRows = numberOfRows;
 	this->numberOfColumns = numberOfColumns;
@@ -22,13 +23,20 @@ GenericLinkageStatus::GenericLinkageStatus(
 	this->queue = PriorityQueue(this->minimumDistances, numberOfRows);
 
 	int linkageSize = (numberOfRows - 1) * 3;
-	this->linkage = new float[linkageSize];
+	this->linkage = linkage;
 
 	int sizesLength = 2 * numberOfRows;
 	this->sizes = new int[sizesLength];
 	InitialiseSizes(sizes, numberOfRows);
 
 	this->newClusterUpdate = CentroidUpdate;
+}
+
+GenericLinkageStatus::~GenericLinkageStatus()
+{
+	delete[] minimumDistances;
+	delete[] nearestNeighbours;
+	delete[] sizes;
 }
 
 void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, int newLocation)
@@ -172,18 +180,16 @@ void GenericLinkageStatus::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex
 	this->queue.UpdateMinimum(std::sqrt(minimumDistance));
 }
 
-GenericLinkageStatus GenericLinkage(float* data, int numberOfRows, int numberOfColumns)
+void GenericLinkage(float* data, float* linkage, int numberOfRows, int numberOfColumns)
 {
 	int firstCluster, secondCluster;
 	float distance;
 
-	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
 
 	for (int depth = 0; depth < numberOfRows - 1; depth++)
 	{
 		currentStatus.GetNextClustersToMerge(&firstCluster, &secondCluster, &distance);
 		currentStatus.InsertNewCluster(depth, firstCluster, secondCluster, distance);
 	}
-
-	return currentStatus;
 }

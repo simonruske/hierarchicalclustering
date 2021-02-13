@@ -30,6 +30,8 @@ namespace TestHierarchicalClustering
 			// Assert
 			float difference = std::abs(0.1314f - result);
 			Assert::IsTrue(difference < this->tolerance);
+
+			delete[] data;
 		}
 
 		#pragma endregion
@@ -62,6 +64,8 @@ namespace TestHierarchicalClustering
 				swprintf(buffer, 100, L"There was a problem with element %d", i);
 				Assert::IsTrue(std::abs(data[i + 16] - expectedNewCentre[i]) < this->tolerance, buffer);
 			}
+
+			delete[] data;
 		}
 
 		#pragma endregion

@@ -2,7 +2,7 @@
 #include "CppUnitTest.h"
 #include "../HierarchicalClustering/GenericLinkage.h"
 #include "../HierarchicalClustering/GenericLinkage.cpp"
-#include "../HierarchicalClustering/Read.h";
+#include "../HierarchicalClustering/Read.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -27,7 +27,9 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			float* linkage = new float[9];
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
 
 			// Labels
 			std::unordered_set<int> labels = *status.GetClusterLabels();
@@ -75,6 +77,11 @@ namespace TestHierarchicalClustering
 			{
 				Assert::AreEqual(1, status.GetSize(i));
 			}
+
+			delete[] expectedMinimumDistances;
+			delete[] expectedNearestNeighbours;
+			delete[] linkage;
+			delete[] data;
 		}
 
 		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_CombineSizes)
@@ -91,13 +98,18 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			float* linkage = new float[9];
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.CombineSizes(0, 1, 4);
 
 			//Assert
 			Assert::AreEqual(2, status.GetSize(4));
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		TEST_METHOD(TestGenericLinkage_GenericLinkageStatus_SetLinkage_Example)
@@ -114,14 +126,15 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			float* linkage = new float[9];
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.SetLinkage(0, 0, 1, 0.0609f);
 			status.SetLinkage(1, 2, 3, 0.6421f);
 
 			//Assert
-			float* linkage = status.GetLinkage();
 
 			Assert::AreEqual(0.0f   , linkage[0]);
 			Assert::AreEqual(1.0f   , linkage[1]);
@@ -131,6 +144,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(2.0f, linkage[3]);
 			Assert::AreEqual(3.0f, linkage[4]);
 			Assert::AreEqual(0.6421f, linkage[5]);
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		TEST_METHOD(TestGenericLinakge_GenericLinakgeStatus_InsertNewCluster)
@@ -148,14 +164,14 @@ namespace TestHierarchicalClustering
 				0.00f, 0.00f, 0.00f, 0.00f, // for the new centre
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data);
+			float* linkage = new float[12];
+
+			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.InsertNewCluster(0, 0, 1, 0.0609f);
 
 			//Assert - linkage
-			float* linkage = status.GetLinkage();
-
 			Assert::AreEqual(0.0f, linkage[0]);
 			Assert::AreEqual(1.0f, linkage[1]);
 			Assert::AreEqual(0.0609f, linkage[2]);
@@ -175,6 +191,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(1, (int)labels.count(4)); // new label should be created
 			Assert::AreEqual(0, (int)labels.count(0)); // old label should be deleted
 			Assert::AreEqual(0, (int)labels.count(1)); // old label should be deleted
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		#pragma endregion
@@ -192,7 +211,9 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			auto status = GenericLinkageStatus(4, 4, data);
+			float* linkage = new float[9];
+
+			auto status = GenericLinkageStatus(4, 4, data, linkage);
 
 			int firstCluster;
 			int secondCluster;
@@ -205,6 +226,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(0, firstCluster);
 			Assert::AreEqual(1, secondCluster);
 			Assert::IsTrue(std::abs(distance - 0.24677925358f) < this->tolerance);
+			
+			delete[] data;
+			delete[] linkage;
 		}
 
 		TEST_METHOD(TestGenericLinkage_GetNextClustersToMerge_NearestNeighbourMissing_PointStillMinimum)
@@ -226,8 +250,10 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			auto status = GenericLinkageStatus(4, 4, data);
-			status.InsertNewCluster(0, 1, 3, 0.1);
+			float* linkage = new float[12];
+
+			auto status = GenericLinkageStatus(4, 4, data, linkage);
+			status.InsertNewCluster(0, 1, 3, 0.1f);
 
 			int firstCluster;
 			int secondCluster;
@@ -240,6 +266,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(0, firstCluster);
 			Assert::AreEqual(2, secondCluster);
 			Assert::IsTrue(std::abs(distance - 0.24677925358f) < this->tolerance);
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		TEST_METHOD(TestGenericLinkage_GetNextClustersToMerge_NearestNeighbourMissing_NewNearestNeighbour)
@@ -255,7 +284,9 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			auto status = GenericLinkageStatus(4, 4, data);
+			float* linkage = new float[15];
+
+			auto status = GenericLinkageStatus(4, 4, data, linkage);
 			status.InsertNewCluster(0, 1, 3, 12.5);
 
 			int firstCluster;
@@ -269,6 +300,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(0, firstCluster);
 			Assert::AreEqual(2, secondCluster);
 			Assert::IsTrue(std::abs(distance - 0.24677925358f) < this->tolerance);
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		#pragma endregion
@@ -286,7 +320,9 @@ namespace TestHierarchicalClustering
 				0.39f, 0.96f, 0.39f, 0.20f,
 			};
 
-			GenericLinkageStatus status = GenericLinkageStatus(4, 4, data);
+			float* linkage = new float[9];
+
+			GenericLinkageStatus status = GenericLinkageStatus(4, 4, data, linkage);
 
 			//Act I
 			status.UpdateNearestNeighbourOfMinimumPoint(0);
@@ -341,6 +377,9 @@ namespace TestHierarchicalClustering
 
 			Assert::IsTrue(std::abs(minimumDistance - 0.8013114251) < this->tolerance);
 			Assert::AreEqual(3, status.GetNearestNeighbours()[2]);
+
+			delete[] data;
+			delete[] linkage;
 		}
 
 		#pragma endregion
@@ -348,12 +387,12 @@ namespace TestHierarchicalClustering
 		#pragma region GenericLinkage
 		TEST_METHOD(TestGenericLinkage_GenericLinkage_Example_Rows10)
 		{
-			runGenericLinkageOnTestFile("..//..//TestFiles//data_10.csv", "..//..//TestFiles//linkage_10.csv");
+			runGenericLinkageOnTestFile(SOLUTION_DIRECTORY"TestFiles\\data_10.csv", SOLUTION_DIRECTORY"TestFiles//linkage_10.csv");
 		}
 
 		TEST_METHOD(TestGenericLinkage_GenericLinkage_Example_Rows1000)
 		{
-			runGenericLinkageOnTestFile("..//..//TestFiles//data_1000.csv", "..//..//TestFiles//linkage_1000.csv");
+			runGenericLinkageOnTestFile(SOLUTION_DIRECTORY"TestFiles\\data_1000.csv", SOLUTION_DIRECTORY"TestFiles//linkage_1000.csv");
 		}
 
 		#pragma endregion
@@ -373,9 +412,11 @@ namespace TestHierarchicalClustering
 			float* vec = new float[vecSize];
 			Assert::IsTrue(TryGetArrayFromFile(inputFilename, m, n, vec), L"Could not read in the array from the file");
 
-			//Act
-			GenericLinkageStatus status = GenericLinkage(vec, m, n);
+			int linkageSize = (m - 1) * 3;
+			float* actualLinkage = new float[linkageSize];
 
+			//Act
+			GenericLinkage(vec, actualLinkage, m, n);
 
 			//Assert
 			int linkageNumberOfRows;
@@ -384,23 +425,28 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(m - 1, linkageNumberOfRows);
 			Assert::AreEqual(4, linkageNumberOfColumns);
 
-			int expectedLinkageSize = (m - 1) * 4;
+			int expectedLinkageSize = linkageNumberOfRows * linkageNumberOfColumns;
 			float* expectedLinkage = new float[expectedLinkageSize];
 			Assert::IsTrue(TryGetArrayFromFile(linkageFilename, linkageNumberOfRows, linkageNumberOfColumns, expectedLinkage));
-
-			float* actualLinkage = status.GetLinkage();
 
 			wchar_t buffer[100];
 			for (int i = 0; i < linkageNumberOfRows; i++)
 			{
 				for (int j = 0; j < 3; j++)
 				{
-					int expectedIndex = i * 4 + j;
+					int expectedIndex = i * linkageNumberOfColumns + j;
 					int actualIndex = i * 3 + j;
-					swprintf(buffer, 100, L"Linkage element %d,%d did not match: expected %f but got %f", i, j, expectedLinkage[expectedIndex], actualLinkage[actualIndex]);
+					
+					float expected = expectedLinkage[expectedIndex];
+					float actual = actualLinkage[actualIndex];
+					swprintf(buffer, 100, L"Linkage element %d,%d did not match: expected %f but got %f", i, j, expected, actual);
 					Assert::IsTrue(std::abs(expectedLinkage[expectedIndex] - actualLinkage[actualIndex]) < this->tolerance, buffer);
 				}
 			}
+
+			delete[] vec;
+			delete[] actualLinkage;
+			delete[] expectedLinkage;
 		}
 	};
 }

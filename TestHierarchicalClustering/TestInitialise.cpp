@@ -47,6 +47,7 @@ namespace TestHierarchicalClustering
 			{
 				Assert::AreEqual(1, sizes[i]);
 			}
+			delete[] sizes;
 		}
 
 		#pragma endregion
@@ -82,6 +83,8 @@ namespace TestHierarchicalClustering
 				Assert::AreEqual(expectedNearestNeighbours[i], nearestNeighbours[i]);
 				Assert::IsTrue(std::abs(expectedMinimumDistances[i] - minimumDistances[i]) < this->tolerance);
 			}
+
+			delete[] data;
 		}
 
 		#pragma endregion
