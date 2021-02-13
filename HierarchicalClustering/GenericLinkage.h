@@ -3,45 +3,46 @@
 #include <functional>
 #include "Queue.h"
 
+template <typename T>
 class GenericLinkageStatus
 {
 public:
 	GenericLinkageStatus(
 		int numberOfRows, 
 		int numberOfColumns, 
-		float* data,
-		float* linkage);
+		T* data,
+		T* linkage);
 	~GenericLinkageStatus();
 
 	void CombineSizes(int firstLocation, int secondLocation, int newLocation);
-	void SetLinkage(int depth, int firstCluster, int secondCluster, float distance);
-	void InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance);
+	void SetLinkage(int depth, int firstCluster, int secondCluster, T distance);
+	void InsertNewCluster(int depth, int firstCluster, int secondCluster, T distance);
 	void UpdateNearestNeighbours(int newCluster);
 
-	void GetNextClustersToMerge(int* firstCluster, int* secondCluster, float* distance);
+	void GetNextClustersToMerge(int* firstCluster, int* secondCluster, T* distance);
 	void UpdateNearestNeighbourOfMinimumPoint(int clusterIndex);
 
 	std::unordered_set<int>* GetClusterLabels();
-	PriorityQueue* GetQueue();
-	float* GetMinimumDistances();
+	PriorityQueue<T>* GetQueue();
+	T* GetMinimumDistances();
 	int* GetNearestNeighbours();
-	float* GetData();
-	float* GetLinkage();
+	T* GetData();
+	T* GetLinkage();
 	int GetSize(int clusterIndex);
 	void PrintLinkage();
 
 private:
 	std::unordered_set<int> clusterLabels;
-	PriorityQueue queue;
-	float* minimumDistances;
+	PriorityQueue<T> queue;
+	T* minimumDistances;
 	int* nearestNeighbours;
-	float* data;
+	T* data;
 	int* sizes;
-	float* linkage;
+	T* linkage;
 	int numberOfRows;
 	int numberOfColumns;
 
-	std::function<void(float*, int*, int, int, int, int)> newClusterUpdate;
+	std::function<void(T*, int*, int, int, int, int)> newClusterUpdate;
 };
 
-void GenericLinkage(float* data, float* linkage, int numberOfRows, int numberOfColumns);
+template <typename T> void GenericLinkage(T* data, T* linkage, int numberOfRows, int numberOfColumns);

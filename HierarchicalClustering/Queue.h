@@ -1,18 +1,19 @@
 #pragma once
 
+template <typename T>
 class PriorityQueue
 {
 public:
     
-    PriorityQueue(float minimumDistances[], int size);
+    PriorityQueue(T minimumDistances[], int size);
 
-    void GetMinimum(int* index, float* minimum_distance);
-    void UpdateMinimum(float distance);
+    void GetMinimum(int* index, T* minimum_distance);
+    void UpdateMinimum(T distance);
     void RemoveMinimum();
     void ReplaceElement(int originalLabel, int newLabel);
     
     int* GetIndices();
-    float* GetMinimumDistances();
+    T* GetMinimumDistances();
     int GetCurrentSize();
     int GetCapacity();
 
@@ -22,7 +23,7 @@ private:
     int capacity;
 
     int* indices;
-    float* minimumDistances;
+    T* minimumDistances;
 
     void swap(int first_index, int second_index);
     bool isStrictlyGreater(int first_index, int second_index);

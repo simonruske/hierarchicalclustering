@@ -6,9 +6,10 @@ void InitialiseClusterLabels(std::unordered_set<int>* clusterLabels, int numberO
 
 void InitialiseSizes(int* sizes, int numberOfRows);
 
+template<typename T>
 void InitialiseNearestNeighbours(
 	int numberOfRows,
 	int numberOfColumns,
 	int* nearestNeighbours,
-	float* minimumDistances,
-	float* data);
+	T* minimumDistances,
+	T* data);

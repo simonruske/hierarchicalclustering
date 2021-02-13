@@ -1,17 +1,12 @@
 #include "Distance.h"
-#include "math.h"
 
-float Euclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns)
+template <typename T>
+T SquaredEuclidean(T* data, int firstIndex, int secondIndex, int numberOfColumns)
 {
-	return sqrtf(SquaredEuclidean(data, firstIndex, secondIndex, numberOfColumns));
-}
-
-float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns)
-{
-	float distance = 0;
+	T distance = 0;
 	for (int i = 0; i < numberOfColumns; i++)
 	{
-		float difference = data[firstIndex * numberOfColumns + i] - data[secondIndex * numberOfColumns + i];
+		T difference = data[firstIndex * numberOfColumns + i] - data[secondIndex * numberOfColumns + i];
 		distance += difference * difference;
 	}
 	return distance;
@@ -27,7 +22,8 @@ float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberO
 /// <param name="secondIndex"></param>
 /// <param name="newIndex"></param>
 
-void CentroidUpdate(float* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex)
+template<typename T>
+void CentroidUpdate(T* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex)
 {
 	for (int i = 0; i < numberOfColumns; i++)
 	{
@@ -37,3 +33,8 @@ void CentroidUpdate(float* data, int* sizes, int numberOfColumns, int firstIndex
 			sizes[newIndex];
 	}
 }
+
+template double SquaredEuclidean<double>(double* data, int firstIndex, int secondIndex, int numberOfColumns);
+template float SquaredEuclidean<float>(float* data, int firstIndex, int secondIndex, int numberOfColumns);
+template void CentroidUpdate<double>(double* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex);
+template void CentroidUpdate<float>(float* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex);

@@ -3,11 +3,12 @@
 #include "Initialise.h"
 #include <iostream>
 
-GenericLinkageStatus::GenericLinkageStatus(
+template <typename T>
+GenericLinkageStatus<T>::GenericLinkageStatus(
 	int numberOfRows,
 	int numberOfColumns,
-	float* data,
-	float* linkage) : queue(NULL, 0)
+	T* data,
+	T* linkage) : queue(NULL, 0)
 {
 	this->numberOfRows = numberOfRows;
 	this->numberOfColumns = numberOfColumns;
@@ -16,11 +17,11 @@ GenericLinkageStatus::GenericLinkageStatus(
 	InitialiseClusterLabels(&this->clusterLabels, numberOfRows);
 
 	int minimumDistanceSizeLength = 2 * numberOfRows - 1;
-	this->minimumDistances = new float[minimumDistanceSizeLength];
+	this->minimumDistances = new T[minimumDistanceSizeLength];
 	this->nearestNeighbours = new int[minimumDistanceSizeLength];
 	InitialiseNearestNeighbours(numberOfRows, numberOfColumns, this->nearestNeighbours, this->minimumDistances, this->data);
 
-	this->queue = PriorityQueue(this->minimumDistances, numberOfRows);
+	this->queue = PriorityQueue<T>(this->minimumDistances, numberOfRows);
 
 	int linkageSize = (numberOfRows - 1) * 3;
 	this->linkage = linkage;
@@ -29,29 +30,33 @@ GenericLinkageStatus::GenericLinkageStatus(
 	this->sizes = new int[sizesLength];
 	InitialiseSizes(sizes, numberOfRows);
 
-	this->newClusterUpdate = CentroidUpdate;
+	this->newClusterUpdate = CentroidUpdate<T>;
 }
 
-GenericLinkageStatus::~GenericLinkageStatus()
+template <typename T>
+GenericLinkageStatus<T>::~GenericLinkageStatus()
 {
 	delete[] minimumDistances;
 	delete[] nearestNeighbours;
 	delete[] sizes;
 }
 
-void GenericLinkageStatus::CombineSizes(int firstLocation, int secondLocation, int newLocation)
+template <typename T>
+void GenericLinkageStatus<T>::CombineSizes(int firstLocation, int secondLocation, int newLocation)
 {
 	this->sizes[newLocation] = this->sizes[firstLocation] + this->sizes[secondLocation];
 }
 
-void GenericLinkageStatus::SetLinkage(int depth, int firstCluster, int secondCluster, float distance)
+template <typename T>
+void GenericLinkageStatus<T>::SetLinkage(int depth, int firstCluster, int secondCluster, T distance)
 {
 	this->linkage[depth * 3 ] = std::min(firstCluster, secondCluster);
 	this->linkage[depth * 3  + 1] = std::max(firstCluster, secondCluster);
 	this->linkage[depth * 3  + 2] = distance;
 }
 
-void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int secondCluster, float distance)
+template <typename T>
+void GenericLinkageStatus<T>::InsertNewCluster(int depth, int firstCluster, int secondCluster, T distance)
 {
 	int newCluster = this->numberOfRows + depth;
 	this->SetLinkage(depth, firstCluster, secondCluster, distance);
@@ -75,13 +80,14 @@ void GenericLinkageStatus::InsertNewCluster(int depth, int firstCluster, int sec
 	this->queue.ReplaceElement(secondCluster, newCluster);
 }
 
-void GenericLinkageStatus::UpdateNearestNeighbours(int newCluster)
+template <typename T>
+void GenericLinkageStatus<T>::UpdateNearestNeighbours(int newCluster)
 {
-	float minimumDistance = this->minimumDistances[newCluster];
+	T minimumDistance = this->minimumDistances[newCluster];
 	int nearestNeighbour = 0;
 	for (auto it = this->clusterLabels.begin(); it != this->clusterLabels.end(); ++it)
 	{
-		float currentDistance = SquaredEuclidean(data, newCluster, *it, this->numberOfColumns);
+		T currentDistance = SquaredEuclidean(data, newCluster, *it, this->numberOfColumns);
 		if (currentDistance < minimumDistance)
 		{
 			minimumDistance = currentDistance;
@@ -92,7 +98,8 @@ void GenericLinkageStatus::UpdateNearestNeighbours(int newCluster)
 	this->nearestNeighbours[newCluster] = nearestNeighbour;
 }
 
-void GenericLinkageStatus::GetNextClustersToMerge(int* firstCluster, int* secondCluster, float* distance)
+template <typename T>
+void GenericLinkageStatus<T>::GetNextClustersToMerge(int* firstCluster, int* secondCluster, T* distance)
 {
 	this->queue.GetMinimum(firstCluster, distance);
 	*secondCluster = this->nearestNeighbours[*firstCluster];
@@ -109,42 +116,50 @@ void GenericLinkageStatus::GetNextClustersToMerge(int* firstCluster, int* second
 	this->queue.RemoveMinimum();
 }
 
-std::unordered_set<int>* GenericLinkageStatus::GetClusterLabels()
+template <typename T>
+std::unordered_set<int>* GenericLinkageStatus<T>::GetClusterLabels()
 {
 	return &this->clusterLabels;
 }
 
-PriorityQueue* GenericLinkageStatus::GetQueue()
+template <typename T>
+PriorityQueue<T>* GenericLinkageStatus<T>::GetQueue()
 {
 	return &this->queue;
 }
 
-float* GenericLinkageStatus::GetData()
+template <typename T>
+T* GenericLinkageStatus<T>::GetData()
 {
 	return this->data;
 }
 
-float* GenericLinkageStatus::GetMinimumDistances()
+template <typename T>
+T* GenericLinkageStatus<T>::GetMinimumDistances()
 {
 	return this->minimumDistances;
 }
 
-int* GenericLinkageStatus::GetNearestNeighbours()
+template <typename T>
+int* GenericLinkageStatus<T>::GetNearestNeighbours()
 {
 	return this->nearestNeighbours;
 }
 
-float* GenericLinkageStatus::GetLinkage()
+template <typename T>
+T* GenericLinkageStatus<T>::GetLinkage()
 {
 	return this->linkage;
 }
 
-int GenericLinkageStatus::GetSize(int clusterIndex)
+template <typename T>
+int GenericLinkageStatus<T>::GetSize(int clusterIndex)
 {
 	return this->sizes[clusterIndex];
 }
 
-void GenericLinkageStatus::PrintLinkage()
+template <typename T>
+void GenericLinkageStatus<T>::PrintLinkage()
 {
 	for (int i = 0; i < this->numberOfRows - 1; i++)
 	{
@@ -156,9 +171,10 @@ void GenericLinkageStatus::PrintLinkage()
 	}
 }
 
-void GenericLinkageStatus::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex)
+template <typename T>
+void GenericLinkageStatus<T>::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex)
 {
-	float minimumDistance = std::numeric_limits<float>::max();
+	T minimumDistance = std::numeric_limits<T>::max();
 	std::unordered_set<int>::iterator setIterator;
 
 	for (setIterator = this->clusterLabels.begin(); setIterator != this->clusterLabels.end(); setIterator++)
@@ -168,7 +184,7 @@ void GenericLinkageStatus::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex
 			continue;
 		}
 
-		float current_distance = SquaredEuclidean(data, clusterIndex, *setIterator, numberOfColumns);
+		T current_distance = SquaredEuclidean(data, clusterIndex, *setIterator, numberOfColumns);
 
 		if (current_distance < minimumDistance)
 		{
@@ -180,12 +196,13 @@ void GenericLinkageStatus::UpdateNearestNeighbourOfMinimumPoint(int clusterIndex
 	this->queue.UpdateMinimum(std::sqrt(minimumDistance));
 }
 
-void GenericLinkage(float* data, float* linkage, int numberOfRows, int numberOfColumns)
+template <typename T>
+void GenericLinkage(T* data, T* linkage, int numberOfRows, int numberOfColumns)
 {
 	int firstCluster, secondCluster;
-	float distance;
+	T distance{};
 
-	auto currentStatus = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
+	auto currentStatus = GenericLinkageStatus<T>(numberOfRows, numberOfColumns, data, linkage);
 
 	for (int depth = 0; depth < numberOfRows - 1; depth++)
 	{
@@ -193,3 +210,6 @@ void GenericLinkage(float* data, float* linkage, int numberOfRows, int numberOfC
 		currentStatus.InsertNewCluster(depth, firstCluster, secondCluster, distance);
 	}
 }
+
+template void GenericLinkage<double>(double* data, double* linkage, int numberOfRows, int numberOfColumns);
+template void GenericLinkage<float>(float* data, float* linkage, int numberOfRows, int numberOfColumns);

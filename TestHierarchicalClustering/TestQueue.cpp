@@ -17,7 +17,7 @@ namespace TestHierarchicalClustering
 		{
 			int size = 2;
 			float* minimumDistances = new float[2]{ 0.45f, 0.35f };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			int* indices = queue.GetIndices();
 			Assert::AreEqual(1, indices[0]);
@@ -38,7 +38,7 @@ namespace TestHierarchicalClustering
 			// Act
 			int size = 2;
 			float* minimumDistances = new float[2]{ 0.35f, 0.45f };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 			delete[] minimumDistances;
 		}
@@ -48,7 +48,7 @@ namespace TestHierarchicalClustering
 			// Act
 			int size = 2;
 			float* minimumDistances = new float[2]{ 0.45f, 0.35f };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 			delete[] minimumDistances;
 		}
@@ -58,7 +58,7 @@ namespace TestHierarchicalClustering
 			// Act
 			int size = 3;
 			float* minimumDistances = new float[3]{ 0.35f, 0.45f, 0.55f };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 			delete[] minimumDistances;
 		}
@@ -68,7 +68,7 @@ namespace TestHierarchicalClustering
 			// Act
 			int size = 3;
 			float* minimumDistances = new float[3]{ 0.35f, 0.55f, 0.45f };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 			Assert::IsTrue(this->IsMinimumHeap(queue));
 			delete[] minimumDistances;
 		}
@@ -88,7 +88,7 @@ namespace TestHierarchicalClustering
 					minimumDistances[i] = float(rand()) / float((RAND_MAX)) * 0.75f;
 				}
 
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+				PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 				Assert::IsTrue(this->IsMinimumHeap(queue));
 
@@ -101,7 +101,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 9;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			//Queue should original have minimum 1 from position 6 in the distance array
 			float originalMinimum;
@@ -118,7 +118,7 @@ namespace TestHierarchicalClustering
 		{
 			int size = 0;
 			float* minimumDistances = new float[0]{};
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			Assert::AreEqual(0, queue.GetCapacity());
 			Assert::AreEqual(0, queue.GetCurrentSize());
@@ -133,7 +133,7 @@ namespace TestHierarchicalClustering
 		{
 			int size = 9;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			int index;
 			float minimumDistance;
@@ -196,7 +196,7 @@ namespace TestHierarchicalClustering
 			auto action = [] {
 				int size = 1;
 				float* minimumDistances = new float[size] { 1 };
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+				PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 				queue.RemoveMinimum();
 				Assert::AreEqual(0, queue.GetCurrentSize());
@@ -217,7 +217,7 @@ namespace TestHierarchicalClustering
 			auto action = [] {
 				int size = 1;
 				float* minimumDistances = new float[size] { 1 };
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+				PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 				queue.RemoveMinimum();
 				Assert::AreEqual(0, queue.GetCurrentSize());
@@ -241,7 +241,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 9;
 			float* minimumDistances = new float[size]{ 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			queue.UpdateMinimum(1.5f);
 
@@ -260,7 +260,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 9;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 			queue.UpdateMinimum(2.5f);
 
@@ -280,7 +280,7 @@ namespace TestHierarchicalClustering
 
 				int size = 1;
 				float* minimumDistances = new float[size] { 1 };
-				PriorityQueue queue = PriorityQueue(minimumDistances, size);
+				PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size);
 
 				queue.RemoveMinimum();
 				Assert::AreEqual(0, queue.GetCurrentSize());
@@ -302,7 +302,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1, -1 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size - 1);
 
 			//Act
 			minimumDistances[9] = 37.0f;
@@ -345,7 +345,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, std::numeric_limits<float>().max()};
-			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size - 1);
 
 			//Act
 			minimumDistances[9] = 0.0f;
@@ -388,7 +388,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size - 1);
 
 			//Act
 			minimumDistances[9] = 1.5f;
@@ -431,7 +431,7 @@ namespace TestHierarchicalClustering
 			//Arrange
 			int size = 10;
 			float* minimumDistances = new float[size] { 100, 19, 36, 17, 3, 25, 1, 2, 7, -1 };
-			PriorityQueue queue = PriorityQueue(minimumDistances, size - 1);
+			PriorityQueue<float> queue = PriorityQueue<float>(minimumDistances, size - 1);
 
 			//Act
 			minimumDistances[9] = 2.5;
@@ -544,7 +544,7 @@ namespace TestHierarchicalClustering
 		#pragma endregion
 
 	private: 
-		static bool IsMinimumHeap(PriorityQueue queue)
+		static bool IsMinimumHeap(PriorityQueue<float> queue)
 		{
 			int size = queue.GetCurrentSize();
 			int* indices = queue.GetIndices();

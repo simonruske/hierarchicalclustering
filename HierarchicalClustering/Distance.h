@@ -1,3 +1,2 @@
-float Euclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns);
-float SquaredEuclidean(float* data, int firstIndex, int secondIndex, int numberOfColumns);
-void CentroidUpdate(float* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex);
+template<typename T> T SquaredEuclidean(T* data, int firstIndex, int secondIndex, int numberOfColumns);
+template<typename T> void CentroidUpdate(T* data, int* sizes, int numberOfColumns, int firstIndex, int secondIndex, int newIndex);

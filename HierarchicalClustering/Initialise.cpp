@@ -19,25 +19,26 @@ void InitialiseSizes(int* sizes, int numberOfRows)
 	}
 }
 
+template<typename T>
 void InitialiseNearestNeighbours(
 	int numberOfRows,
 	int numberOfColumns,
 	int* nearestNeighbours,
-	float* minimumDistances,
-	float* data)
+	T* minimumDistances,
+	T* data)
 {
-	float minimumDistance;
-	float currentDistance;
+	T minimumDistance;
+	T currentDistance;
 	int nearestNeighbour;
 
 	for (int i = 0; i < numberOfRows * 2 - 1; i++)
 	{
-		minimumDistances[i] = std::numeric_limits<float>().max();
+		minimumDistances[i] = std::numeric_limits<T>().max();
 	}
 
 	for (int i = 0; i < numberOfRows - 1; i++)
 	{
-		minimumDistance = std::numeric_limits<float>().max();
+		minimumDistance = std::numeric_limits<T>().max();
 		nearestNeighbour = 0;
 		for (int j = i + 1; j < numberOfRows; j++)
 		{
@@ -49,7 +50,22 @@ void InitialiseNearestNeighbours(
 				nearestNeighbour = j;
 			}
 		}
-		minimumDistances[i] = std::sqrtf(minimumDistance);
+		minimumDistances[i] = std::sqrt(minimumDistance);
 		nearestNeighbours[i] = nearestNeighbour;
 	}
 }
+
+template void InitialiseNearestNeighbours<float>(
+	int numberOfRows,
+	int numberOfColumns,
+	int* nearestNeighbours,
+	float* minimumDistances,
+	float* data);
+
+
+template void InitialiseNearestNeighbours<double>(
+	int numberOfRows,
+	int numberOfColumns,
+	int* nearestNeighbours,
+	double* minimumDistances,
+	double* data);

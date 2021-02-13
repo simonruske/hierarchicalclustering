@@ -3,6 +3,7 @@
 #include "../HierarchicalClustering/GenericLinkage.h"
 #include "../HierarchicalClustering/GenericLinkage.cpp"
 #include "../HierarchicalClustering/Read.h"
+#include <chrono>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -29,8 +30,8 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[9];
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
-
+			GenericLinkageStatus<float> status = GenericLinkageStatus<float>(numberOfRows, numberOfColumns, data, linkage);
+			
 			// Labels
 			std::unordered_set<int> labels = *status.GetClusterLabels();
 			Assert::AreEqual(4, (int)labels.size());
@@ -64,7 +65,7 @@ namespace TestHierarchicalClustering
 			}
 
 			// Queue
-			PriorityQueue *queue = status.GetQueue();
+			PriorityQueue<float> *queue = status.GetQueue();
 
 			int index;
 			float distance;
@@ -100,7 +101,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[9];
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
+			GenericLinkageStatus<float> status = GenericLinkageStatus<float>(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.CombineSizes(0, 1, 4);
@@ -128,7 +129,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[9];
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
+			GenericLinkageStatus<float> status = GenericLinkageStatus<float>(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.SetLinkage(0, 0, 1, 0.0609f);
@@ -166,7 +167,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[12];
 
-			GenericLinkageStatus status = GenericLinkageStatus(numberOfRows, numberOfColumns, data, linkage);
+			GenericLinkageStatus<float> status = GenericLinkageStatus<float>(numberOfRows, numberOfColumns, data, linkage);
 
 			//Act
 			status.InsertNewCluster(0, 0, 1, 0.0609f);
@@ -213,7 +214,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[9];
 
-			auto status = GenericLinkageStatus(4, 4, data, linkage);
+			auto status = GenericLinkageStatus<float>(4, 4, data, linkage);
 
 			int firstCluster;
 			int secondCluster;
@@ -239,7 +240,7 @@ namespace TestHierarchicalClustering
 			int size = 4;
 			float* minimumDistances = new float[size] {0.0f, 0.0609f, 0.1095f, 0.641f }; // 0 has nearest neighbour of 1 with distance 0
 			int* nearestNeighbours = new int[size] { 1, 2, 3, 3 }; 
-			auto queue = PriorityQueue(minimumDistances, size);
+			auto queue = PriorityQueue<float>(minimumDistances, size);
 
 			float* data = new float[20]
 			{
@@ -252,7 +253,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[12];
 
-			auto status = GenericLinkageStatus(4, 4, data, linkage);
+			auto status = GenericLinkageStatus<float>(4, 4, data, linkage);
 			status.InsertNewCluster(0, 1, 3, 0.1f);
 
 			int firstCluster;
@@ -286,7 +287,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[15];
 
-			auto status = GenericLinkageStatus(4, 4, data, linkage);
+			auto status = GenericLinkageStatus<float>(4, 4, data, linkage);
 			status.InsertNewCluster(0, 1, 3, 12.5);
 
 			int firstCluster;
@@ -322,7 +323,7 @@ namespace TestHierarchicalClustering
 
 			float* linkage = new float[9];
 
-			GenericLinkageStatus status = GenericLinkageStatus(4, 4, data, linkage);
+			GenericLinkageStatus<float> status = GenericLinkageStatus<float>(4, 4, data, linkage);
 
 			//Act I
 			status.UpdateNearestNeighbourOfMinimumPoint(0);
@@ -330,7 +331,7 @@ namespace TestHierarchicalClustering
 			//Assert I
 			int index;
 			float minimumDistance;
-			PriorityQueue* queue = status.GetQueue();
+			PriorityQueue<float>* queue = status.GetQueue();
 			(*queue).GetMinimum(&index, &minimumDistance);
 
 			Assert::AreEqual(0, index);
@@ -395,28 +396,41 @@ namespace TestHierarchicalClustering
 			runGenericLinkageOnTestFile(SOLUTION_DIRECTORY"TestFiles\\data_1000.csv", SOLUTION_DIRECTORY"TestFiles//linkage_1000.csv");
 		}
 
+		TEST_METHOD(TestGenericLinkage_GenericLinkage_Example_Rows40000)
+		{
+			runGenericLinkageOnTestFile(SOLUTION_DIRECTORY"TestFiles\\data_40000.csv", SOLUTION_DIRECTORY"TestFiles//linkage_40000.csv");
+		}
+
 		#pragma endregion
 
 	private:
 
 		float tolerance = 1e-6f;
-		std::function<float(float*, int, int, int)> defaultMetric = SquaredEuclidean;
 
 		void runGenericLinkageOnTestFile(char* inputFilename, char* linkageFilename)
 		{
 			int m, n;
+			wchar_t buffer[100];
 			
 			Assert::IsTrue(TryGetArraySize(inputFilename, &m, &n), L"Could not determine the array size from the input file");
 
 			int vecSize = m * (2 * n + 1);
-			float* vec = new float[vecSize];
-			Assert::IsTrue(TryGetArrayFromFile(inputFilename, m, n, vec), L"Could not read in the array from the file");
+			double* vec = new double[vecSize];
+			Assert::IsTrue(TryGetArrayFromFile<double>(inputFilename, m, n, vec), L"Could not read in the array from the file");
 
 			int linkageSize = (m - 1) * 3;
-			float* actualLinkage = new float[linkageSize];
+			double* actualLinkage = new double[linkageSize];
 
 			//Act
-			GenericLinkage(vec, actualLinkage, m, n);
+			std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+
+			GenericLinkage<double>(vec, actualLinkage, m, n);
+
+			std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+			auto timeSpan = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+			
+			swprintf(buffer, 100, L"Execution time: %i (ms)", (int)timeSpan.count());
+			Logger::WriteMessage(buffer);
 
 			//Assert
 			int linkageNumberOfRows;
@@ -426,10 +440,9 @@ namespace TestHierarchicalClustering
 			Assert::AreEqual(4, linkageNumberOfColumns);
 
 			int expectedLinkageSize = linkageNumberOfRows * linkageNumberOfColumns;
-			float* expectedLinkage = new float[expectedLinkageSize];
-			Assert::IsTrue(TryGetArrayFromFile(linkageFilename, linkageNumberOfRows, linkageNumberOfColumns, expectedLinkage));
+			double* expectedLinkage = new double[expectedLinkageSize];
+			Assert::IsTrue(TryGetArrayFromFile<double>(linkageFilename, linkageNumberOfRows, linkageNumberOfColumns, expectedLinkage));
 
-			wchar_t buffer[100];
 			for (int i = 0; i < linkageNumberOfRows; i++)
 			{
 				for (int j = 0; j < 3; j++)
@@ -437,10 +450,10 @@ namespace TestHierarchicalClustering
 					int expectedIndex = i * linkageNumberOfColumns + j;
 					int actualIndex = i * 3 + j;
 					
-					float expected = expectedLinkage[expectedIndex];
-					float actual = actualLinkage[actualIndex];
+					double expected = expectedLinkage[expectedIndex];
+					double actual = actualLinkage[actualIndex];
 					swprintf(buffer, 100, L"Linkage element %d,%d did not match: expected %f but got %f", i, j, expected, actual);
-					Assert::IsTrue(std::abs(expectedLinkage[expectedIndex] - actualLinkage[actualIndex]) < this->tolerance, buffer);
+					Assert::IsTrue(std::abs(expected - actual) < this->tolerance, buffer);
 				}
 			}
 

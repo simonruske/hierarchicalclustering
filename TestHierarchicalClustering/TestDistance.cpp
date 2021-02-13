@@ -25,7 +25,7 @@ namespace TestHierarchicalClustering
 			};
 
 			// Act
-			float result = SquaredEuclidean(data, 0, 3, 4);
+			float result = SquaredEuclidean<float>(data, 0, 3, 4);
 
 			// Assert
 			float difference = std::abs(0.1314f - result);
@@ -53,7 +53,7 @@ namespace TestHierarchicalClustering
 			int* sizes = new int[5]{ 1, 1, 1, 1, 2 };
 
 			//Act
-			CentroidUpdate(data, sizes, 4, 0, 1, 4);
+			CentroidUpdate<float>(data, sizes, 4, 0, 1, 4);
 
 			//Assert - new centre should be the average of point 0, and 1 and stored in row 4
 			float* expectedNewCentre = new float[4]{0.185f, 0.84f, 0.37f, 0.42f };

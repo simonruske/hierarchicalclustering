@@ -51,13 +51,14 @@ bool TryGetArraySize(std::ifstream *stream, int* numberOfRows, int* numberOfColu
     return true;
 }
 
-bool TryGetArrayFromFile(std::string filename, int numberOfRows, int numberOfColumns, float* arr)
+template<typename T>
+bool TryGetArrayFromFile(std::string filename, int numberOfRows, int numberOfColumns, T* arr)
 {
     std::ifstream inputFile(filename);
 
     if (inputFile.is_open())
     {
-        ReadArrayFromFile(&inputFile, numberOfRows, numberOfColumns, arr);
+        ReadArrayFromFile<T>(&inputFile, numberOfRows, numberOfColumns, arr);
         return true;
     }
     else
@@ -67,7 +68,8 @@ bool TryGetArrayFromFile(std::string filename, int numberOfRows, int numberOfCol
     }
 }
 
-void ReadArrayFromFile(std::ifstream* stream, int numberOfRows, int numberOfColumns, float* arr)
+template <typename T>
+void ReadArrayFromFile(std::ifstream* stream, int numberOfRows, int numberOfColumns, T* arr)
 {
     std::string line;
 
@@ -82,11 +84,13 @@ void ReadArrayFromFile(std::ifstream* stream, int numberOfRows, int numberOfColu
             std::string token;
             std::getline(ss, token, ',');
             currentLocation = numberOfColumns * i + j;
-            arr[currentLocation] = std::strtof(token.c_str(), NULL);
+            arr[currentLocation] = (T)std::strtod(token.c_str(), NULL);
         }
     }
 }
 
+template bool TryGetArrayFromFile<double>(std::string filename, int numberOfRows, int numberOfColumns, double* arr);
+template bool TryGetArrayFromFile<float>(std::string filename, int numberOfRows, int numberOfColumns, float* arr);
 
 
 
