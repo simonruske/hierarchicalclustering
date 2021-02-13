@@ -69,14 +69,15 @@ namespace TestHierarchicalClustering
 			int numberOfRows = 4;
 			int numberOfColumns = 4;
 
-			int* nearestNeighbours = new int[3];
-			float* minimumDistances = new float[3];
+			int* nearestNeighbours = new int[numberOfRows * 2 - 1];
+			float* minimumDistances = new float[numberOfRows * 2 - 1];
 
 			InitialiseNearestNeighbours(numberOfRows, numberOfColumns, nearestNeighbours, minimumDistances, data);
 
 			// Assert - compare with the minimum entries in the result from scipy.spatial.distance.pdist
+			float maximum = std::numeric_limits<float>().max();
 			int* expectedNearestNeighbours  = new int[3]  { 1             ,             3,              3 };
-			float* expectedMinimumDistances = new float[3]{ 0.24677925358f,0.33090784215f, 0.80131142511f };
+			float* expectedMinimumDistances = new float[5]{ 0.24677925358f,0.33090784215f, 0.80131142511f, maximum, maximum };
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -84,7 +85,16 @@ namespace TestHierarchicalClustering
 				Assert::IsTrue(std::abs(expectedMinimumDistances[i] - minimumDistances[i]) < this->tolerance);
 			}
 
+			for (int i = 3; i < 5; i++)
+			{
+				Assert::IsTrue(std::abs(expectedMinimumDistances[i] - minimumDistances[i]) < this->tolerance);
+			}
+			
 			delete[] data;
+			delete[] nearestNeighbours;
+			delete[] minimumDistances;
+			delete[] expectedNearestNeighbours;
+			delete[] expectedMinimumDistances;
 		}
 
 		#pragma endregion

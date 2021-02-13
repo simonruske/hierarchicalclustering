@@ -49,7 +49,7 @@ void InitialiseNearestNeighbours(
 				nearestNeighbour = j;
 			}
 		}
-		minimumDistances[i] = std::sqrt(minimumDistance);
+		minimumDistances[i] = std::sqrtf(minimumDistance);
 		nearestNeighbours[i] = nearestNeighbour;
 	}
 }
