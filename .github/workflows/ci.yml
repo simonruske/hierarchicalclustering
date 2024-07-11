@@ -29,11 +29,13 @@ jobs:
 
         - name: Build Python C++ extension
           run: |
+            source .venv/bin/activate
             python setup.py build_ext --inplace
           working-directory: ./PythonExtension
 
         - name: Run tests
           run: |
+            source .venv/bin/activate
             python -m pytest
           working-directory: ./PythonExtension
 
