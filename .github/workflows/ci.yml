@@ -30,10 +30,12 @@ jobs:
         - name: Build Python C++ extension
           run: |
             python setup.py build_ext --inplace
+          working-directory: ./PythonExtension
 
         - name: Run tests
           run: |
             python -m pytest
+          working-directory: ./PythonExtension
 
           
 
