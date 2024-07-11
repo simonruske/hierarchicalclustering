@@ -23,6 +23,7 @@ jobs:
             python -m venv .venv
             source .venv/bin/activate
             pip install setuptools wheel pytest
+          working-directory: ./PythonExtension
         
         - name: Setup C++ environment
           run: sudo apt-get update && sudo apt-get install -y build-essential
