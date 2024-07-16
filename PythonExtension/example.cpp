@@ -1,6 +1,58 @@
 #include <Python.h>
 #include <numpy/arrayobject.h>
 
+static PyObject* distance(PyObject* self, PyObject* args)
+{
+    PyObject *arg1 = NULL;
+
+    // Parse input object as an array
+    if (!PyArg_ParseTuple(args, "O", &arg1))
+    {
+        return NULL;
+    }
+
+    // Check if the input argument is a numpy array
+    if (!PyArray_Check(arg1))
+    {
+        PyErr_SetString(PyExc_TypeError, "Input argument must be a numpy array.");
+        return NULL;
+    }
+
+    // Check if the input array has 2 dimensions
+    int ndim = PyArray_NDIM(arg1);
+    if (ndim != 2)
+    {
+        PyErr_SetString(PyExc_ValueError, "Input array must have 2 dimensions.");
+        return NULL;
+    }
+
+    // Convert to a continguous array
+    PyObject *arr1 = NULL;
+    arr1 = PyArray_FROM_OTF(arg1, NPY_DOUBLE, NPY_IN_ARRAY);
+
+    if (!arr1) 
+    {
+        Py_XDECREF(arr1);
+        return NULL;
+    }
+
+    npy_intp numberOfColumns = PyArray_DIM(arr1, 1);
+
+    double result = 0.0;
+    double difference = 0.0;
+    
+    for (int i = 0; i < numberOfColumns; i++)
+    {
+        difference = *(double*)PyArray_GETPTR2(arr1, 0, i) - *(double*)PyArray_GETPTR2(arr1, 1, i);
+        result += difference * difference;
+    }
+
+    Py_DECREF(arr1);
+
+    return PyFloat_FromDouble(result);
+
+}
+
 static PyObject* add(PyObject* self, PyObject* args) 
 {
     PyObject *arg1 = NULL, *arg2 = NULL;
@@ -66,6 +118,7 @@ static PyObject* add(PyObject* self, PyObject* args)
 static PyMethodDef ExampleMethods[] = 
 {
     {"add", add, METH_VARARGS, "Add two numbers"},
+    {"distance", distance, METH_VARARGS, "Finds euclidean distance"},
     {NULL, NULL, 0, NULL } // Sentinel
 };
 
